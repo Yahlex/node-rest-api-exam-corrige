@@ -1,8 +1,8 @@
-# Corrigé de l'examen API RESTful
+# Corrigé de l'examen *API RESTful*
 
-Le corrigé en node.js de l'examen API RESTful
+L'implémentation (avec node.js/Express/MySQL) du sujet d'examen du module API *RESTful*.
 
-## Sujet
+## Sujet (Spécifications du système)
 
 On désire mettre en ligne un service de réservation de billets de concert. Le service ne gère pas de base de données des utilisateurs : un·e utilisateur·ice est simplement identifié·e par un pseudo au moment de la réservation.
 
@@ -21,9 +21,9 @@ Attention, **un utilisateur qui a confirmé sa réservation ne peut plus l'annul
 
 ## Prérequis
 
-- installer [node.js](https://nodejs.org/en)
-- installer [Docker](https://www.docker.com/get-started/) et [Compose](https://docs.docker.com/compose/)
-- clôner le dépôt et se placer à la racine du projet
+- Installer [node.js](https://nodejs.org/en)
+- Installer [Docker](https://www.docker.com/get-started/) et [Compose](https://docs.docker.com/compose/)
+- Clôner le dépôt et se placer à la racine du projet
 
 >N'oubliez pas de supprimer le dossier `.git` si vous désirez créer votre propre dépôt à partir des sources
 
@@ -34,7 +34,7 @@ git init
 
 ## Lancer le projet avec Compose
 
-Dupliquer le fichier `.env.dist`
+Créer un fichier d'environnement `.env` local à partir du fichier `.env.dist`
 
 ~~~
 cp .env.dist .env
@@ -85,10 +85,6 @@ Se rendre à l'url [http://localhost:5003](http://localhost:5003) et se connecte
 
 L'`host` de la base de données est le nom du service sur le réseau du projet crée par Docker, soit `db`.
 
-### ORM
-
-Pour interagir avec la base de données SQL, nous pouvons utiliser l'ORM [Sequelize](https://sequelize.org)
-
 ## Documentation de l'API avec Swagger
 
 Générer automatiquement la documentation de vos routes avec le module Swagger
@@ -138,7 +134,7 @@ docker-compose down
 
 >JSON Web Token (JWT) is a compact, URL-safe means of *representing claims to be transferred between two parties* (Source: RFC7519)
 
-Pour **autoriser** (et donc authentifier) l'utilisateur à interagir avec les ressources, on utilise un JSON Web Token. Implémentée dans le projet avec le package [jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken)
+Pour **autoriser** (et donc authentifier) l'utilisateur à interagir avec les ressources, on utilise un JSON Web Token. Implémentée dans le projet avec le package [jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken).
 
 ## Ressources
 
