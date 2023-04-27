@@ -14,5 +14,5 @@ USE mydb;
 INSERT INTO
     Utilisateur (pseudo)
 VALUES
-    ('foo'),
-    ('bar');
+    ('john'),
+    ('eve44');
