@@ -265,6 +265,8 @@ Scénario nominal (où tout se passe bien)
 - L'utilisateur essaie d'effectuer une reservation pour un concert alors qu'il en a déjà une (annulée) : le système doit autoriser la demande, il peut avoir changer d'avis
 - Il n'y a plus de places disponibles pour le concert : le système doit rejeter toute demande de réservation tant qu'une réservation n'est pas annulée
 - Un utilisateur essaie d'effectuer une réservation pour un concert déjà passé : le système doit rejeter la demande
+- Un utilisateur essaie d'annuler une reservation confirmée : le système doit rejeter la demande (voir specs)
+- Un utilisateur essaie de confirmer une reservation annulée : le système doit rejeter la demande (voir specs)
 
 
 > Evidemment, nous n'abordons pas ici les points liés à la sécurité, étant donné qu'il n'y a pas de système d'authentification et donc d'autorisations sur le système ! (seulement pour le gestionnaire de site).
