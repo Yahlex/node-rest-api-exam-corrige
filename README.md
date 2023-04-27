@@ -19,6 +19,10 @@ Attention, **un utilisateur qui a confirmé sa réservation ne peut plus l'annul
 
 > Le sujet original est consultable sur le site de [David Gayerie](https://gayerie.dev/epsi-poe-201703/web-services/07_rest.html#contraintes_rest)
 
+## Documentation sur la conception et les choix d'implémentation
+
+[Accéder à la documentation du projet.](./documentation.md)
+
 ## Prérequis
 
 - Installer [node.js](https://nodejs.org/en)
@@ -85,6 +89,20 @@ Se rendre à l'url [http://localhost:5003](http://localhost:5003) et se connecte
 
 L'`host` de la base de données est le nom du service sur le réseau du projet crée par Docker, soit `db`.
 
+## Créer la base de données test
+
+Se placer à la racine du projet. Créer le schéma de la base de données en *batch mode* :
+
+~~~
+mysql -uroot -proot -h127.0.0.1 -P5002 < scripts-sql/schema.sql
+~~~
+
+Insérer le jeu de données test :
+
+~~~
+mysql -uroot -proot -h127.0.0.1 -P5002 < scripts-sql/dataset.sql
+~~~
+
 ## Documentation de l'API avec Swagger
 
 Générer automatiquement la documentation de vos routes avec le module Swagger
@@ -128,7 +146,6 @@ docker-compose down
 
 - [bodyParser](https://www.npmjs.com/package/body-parser), un parser du corps de requête pour les applications node. On s'en sert pour parser les représentations envoyées par le client dans nos contrôleurs avec l'instruction `app.use(bodyParser.urlencoded({ extended: true }));`
 - [jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken), une implémentation javascript du standard JSON Web Token, voir [RFC 7519](https://www.rfc-editor.org/rfc/rfc7519)
-- [cors](https://www.npmjs.com/package/cors), un module middleware pour gérer la politique CORS (*Cross Origin Resource Sharing*)
 
 ## Autorisations gérées avec JWT
 
