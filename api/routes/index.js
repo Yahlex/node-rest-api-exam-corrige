@@ -10,7 +10,7 @@ router.get('/concerts', function (req, res, next) {
   // #swagger.summary = "Les concerts à venir"
 
   //Liste des concerts avec le nombre de reservations non annulées en cours
-  connection.query("SELECT lieu, artiste, date_debut, nb_places, COUNT(*) as nb_reservations FROM Concert c INNER JOIN Reservation r ON c.id=r.id_concert WHERE r.statut != 'annule' GROUP BY (c.id)", (error, rows, fields) => {
+  connection.query("SELECT id, lieu, artiste, date_debut, nb_places, COUNT(*) as nb_reservations FROM Concert c INNER JOIN Reservation r ON c.id=r.id_concert WHERE r.statut != 'annule' GROUP BY (c.id)", (error, rows, fields) => {
     if (error) {
       console.error('Error connecting: ' + error.stack);
       res.status(500).json('Une erreur est survenue');
@@ -65,6 +65,7 @@ router.get('/concerts/:id', function (req, res, next) {
 /**
  * Réservation d'une place de concert
  * Toutes les réservations d'un concert : GET /concerts/:id/reservation
+ * Cette route ne doit être accessible qu'au gestionnaire du site
  */
 router.get('/concerts/:id/reservation', function (req, res, next) {
 
