@@ -170,7 +170,6 @@ Lister les réservations d'un concert : `GET /concerts/{id}/reservations`
         },
      ],
      "nbReservations": 2,
-     "nbPlacesDisponibles": 150
 }
 ~~~
 
@@ -313,9 +312,13 @@ D'après notre travail sur le dictionnaire des données et sur les ressources, o
 
 ### Conception de la base de données: du MCD au MPD
 
-Voici un schéma UML du modèle conceptuel des données
+Voici un schéma UML du modèle conceptuel des données :
 
-Voici un schéma UML du modèle relationnel (traduction du modèle conceptuel (objet) dans le modèle relationnel)
+<img src="./diagramme-uml-MCD.png" width="600px" alt="Diagramme UML du MCD">
+
+Voici un schéma UML du modèle relationnel (traduction du modèle conceptuel (objet) dans le modèle relationnel) :
+
+
 
 De ce travail nous en déduisons le niveau physique, et [le script SQL (pour MySQL ici)](./scripts-sql/schema.sql).
 
