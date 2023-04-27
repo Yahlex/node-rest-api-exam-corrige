@@ -2,36 +2,41 @@ var express = require('express');
 var router = express.Router();
 var connection = require('../db');
 var hal = require('../hal')
-var repo = require('../queries')
 
 
 /* Les concerts à venir GET /concerts */
 router.get('/concerts', function (req, res, next) {
 
-  // #swagger.summary = "Liste des concerts"
+  // #swagger.summary = "Les concerts à venir"
 
-  concerts = repo.findAllConcerts(req)
-
-  console.log(concerts)
-
-  //Fabriquer Ressource Object Concerts en respectant la spec HAL
-  const concertsResourceObject = {
-    "_embedded": {
-      "concerts": rows.map(row => hal.mapConcertoResourceObject(row, req.baseUrl))
+  //Liste des concerts avec le nombre de reservations non annulées en cours
+  connection.query("SELECT lieu, artiste, date_debut, nb_places, COUNT(*) as nb_reservations FROM Concert c INNER JOIN Reservation r ON c.id=r.id_concert WHERE r.statut != 'annule' GROUP BY (c.id)", (error, rows, fields) => {
+    if (error) {
+      console.error('Error connecting: ' + error.stack);
+      res.status(500).json('Une erreur est survenue');
     }
-  }
 
-  res.set('Content-Type', 'application/hal+json');
-  res.status(200);
-  res.json(concertsResourceObject);
-});
+    //Calculer le nombre de places disponibles: nb places - nb reservation non annulées
+
+    //Fabriquer Ressource Object Concerts en respectant la spec HAL
+    const concertsResourceObject = {
+      "_embedded": {
+        "concerts": rows.map(row => hal.mapConcertoResourceObject(row, req.baseUrl))
+      }
+    }
+    res.set('Content-Type', 'application/hal+json');
+    res.status(200);
+    res.json(concertsResourceObject);
+  })
+})
 
 /* Informations sur un concert : GET /concert/{id} */
 router.get('/concerts/:id', function (req, res, next) {
 
   // #swagger.summary = "Détail d'un concert"
 
-  connection.query('SELECT * FROM Concert WHERE id = ?;', [req.params.id], (error, rows, fields) => {
+  //Les détails d'un concert avec le nombre de places restantes
+  connection.query("SELECT id, lieu, artiste, date_debut, nb_places, description, COUNT(*) as nb_reservations FROM Concert c INNER JOIN Reservation r ON c.id=r.id_concert WHERE r.statut != 'annule' AND c.id= ? GROUP BY (c.id)", [req.params.id], (error, rows, fields) => {
 
     if (error) {
       console.error('Error connecting: ' + err.stack);

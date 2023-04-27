@@ -7,7 +7,7 @@ var jwt = require('jsonwebtoken')
 /**
  * Secret conservé côté serveur pour signer les JWT
  */
-const SECRET = 'mykey'
+const SECRET = 'mysecretkey'
 
 /**
  * Simulation d'un compte avec un role
@@ -39,7 +39,11 @@ router.post('/login', (req, res) => {
     return res.json({ access_token: token })
 })
 
-/* Récupération du header bearer */
+/**
+ * Récupère le bearer token
+ * @param {*} headerValue 
+ * @returns 
+ */
 const extractBearerToken = headerValue => {
     if (typeof headerValue !== 'string') {
         return false
