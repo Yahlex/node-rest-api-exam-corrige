@@ -102,7 +102,7 @@ Schéma type
 ~~~JSON
 {
      "_links": {
-       "self": { "href": "/orders" },
+       "self": { "href": "/concerts" },
      },
      "_embedded": {
        "concerts": [{
