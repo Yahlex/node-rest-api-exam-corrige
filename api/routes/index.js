@@ -91,7 +91,7 @@ router.put('/concerts/:id/reservation', function (req, res, next) {
       return
     }
 
-    if(rows.length === 0){
+    if (rows.length === 0) {
       //Ici on pourrait envoyer le lien pour effectuer une réservation
       res.status(403).json({ "msg": "Vous n'avez aucune réservation à confirmer pour ce concert" });
       return
@@ -99,8 +99,6 @@ router.put('/concerts/:id/reservation', function (req, res, next) {
 
     const userId = (rows[0]).id
     const dateReservation = (rows[0]).date_reservation
-    console.log(rows[0])
-
 
     connection.query("UPDATE Reservation SET statut='confirme' WHERE id_concert=? AND id_utilisateur=?;", [req.params.id, userId], (error, rows, fields) => {
 
@@ -109,13 +107,13 @@ router.put('/concerts/:id/reservation', function (req, res, next) {
         res.status(500).json({ "msg": "Nous rencontrons des difficultés, merci de rééssayer plus tard." });
         return
       }
-      res.json({
+      res.status(201).json({
         "_links": [{
           "self": hal.halLinkObject("/concerts/1/reservations", 'string'),
           "concert": hal.halLinkObject("/concerts/1", 'string'),
         }],
         "dateReservation": dateReservation,
-        "pseudo": userId,
+        "pseudo": req.body.pseudo,
         "status": "confirme",
       });
     })
@@ -146,6 +144,7 @@ router.delete('/concerts/:id/reservation', function (req, res, next) {
     }
 
     const userId = (rows[0]).id
+    const dateReservation = (rows[0]).date_reservation
 
     //Verifier que la reservation exite avec le statut 'a_confirmer'
 
@@ -158,11 +157,29 @@ router.delete('/concerts/:id/reservation', function (req, res, next) {
         return
       }
 
-      if(rows.length === 0){
-        res.status(400).json({ "msg": "Vous n'avez aucune reservation à confirmer sur ce concert" });
+      if (rows.length === 0) {
+        //Ici on pourrait indiquer s'il y a reservation ou non (déjà confirmée.)
+        res.status(400).json({ "msg": "Vous ne pouvez pas annuler votre reservation pour ce concert" });
         return
       }
 
+      connection.query("UPDATE Reservation SET statut='annule' WHERE id_concert=? AND id_utilisateur=?;", [req.params.id, userId], (error, rows, fields) => {
+
+        if (error) {
+          console.error('Error connecting: ' + err.stack);
+          res.status(500).json({ "msg": "Nous rencontrons des difficultés, merci de rééssayer plus tard." });
+          return
+        }
+        res.status(201).json({
+          "_links": [{
+            "self": hal.halLinkObject("/concerts/1/reservations", 'string'),
+            "concert": hal.halLinkObject("/concerts/1", 'string'),
+          }],
+          "dateReservation": dateReservation,
+          "pseudo": req.body.pseudo,
+          "status": "annule",
+        });
+      })
     })
   })
 })
@@ -234,7 +251,7 @@ router.post('/concerts/:id/reservation', function (req, res, next) {
             "annuler": hal.halLinkObject("/concerts/1/reservations", 'string'),
           }],
           "dateReservation": new Date(),
-          "pseudo": userId,
+          "pseudo": req.body.pseudo,
           "status": "a_confirmer",
         });
       })
