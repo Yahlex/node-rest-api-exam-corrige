@@ -16,6 +16,7 @@ L'implémentation (avec node.js/Express/MySQL) du sujet d'examen du module API *
   - [Installer et servir de nouvelles dépendances](#installer-et-servir-de-nouvelles-dépendances)
   - [Remarques](#remarques)
   - [Arrêter le projet](#arrêter-le-projet)
+  - [Déboguer](#déboguer)
   - [Librairies JS notables installées via npm](#librairies-js-notables-installées-via-npm)
   - [Autorisations gérées avec JWT](#autorisations-gérées-avec-jwt)
   - [Ressources](#ressources)
@@ -179,6 +180,16 @@ docker-compose up -d
 ~~~
 docker-compose down
 ~~~
+
+## Déboguer
+
+Pour débuger votre API, ne pas hésiter à *consulter les logs* de votre conteneur docker qui héberge l'application node.js :
+
+~~~
+docker logs -f billeterie-api
+~~~
+
+[Voir la documentation officielle de Docker](https://docs.docker.com/engine/reference/commandline/logs/) pour consulter plus d'options sur les logs.
 
 ## Librairies JS notables installées via npm
 
