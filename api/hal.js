@@ -1,5 +1,5 @@
 /**
- * Export des fonctions utils hal
+ * Export des fonctions utils pour la spécification HAL
  */
 
 /**
@@ -43,6 +43,23 @@ function mapConcertoResourceObject(concertData, baseURL) {
 }
 
 /**
+ * Retourne une représentation Ressource Object (HAL) d'une réservation
+ * @param {*} reservationData Données brutes d'une reservation
+ * @returns un Ressource Object Concert (spec HAL)
+ */
+function mapReservationToResourceObject(data, baseURL) {
+    console.log(data)
+    return {
+        "_links": [{
+            "self": halLinkObject(baseURL + '/concerts' + '/' + data.id + '/reservations', 'string')
+        }],
+        "pseudo": data.pseudo,
+        "date_reservation" : data.date_reservation,
+        "statut": data.statut
+    }
+}
+
+/**
  * Retourne un Resource Object d'un utilisateur
  * @param {*} utilisateurData 
  * @param {*} baseURL 
@@ -61,4 +78,4 @@ function mapUtilisateurtoResourceObject(utilisateurData, baseURL) {
 
 }
 
-module.exports = { halLinkObject, mapConcertoResourceObject, mapUtilisateurtoResourceObject };
+module.exports = { halLinkObject, mapConcertoResourceObject, mapUtilisateurtoResourceObject, mapReservationToResourceObject };

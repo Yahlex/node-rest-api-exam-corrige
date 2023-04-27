@@ -9,34 +9,43 @@ var jwt = require('jsonwebtoken')
  */
 const SECRET = 'mysecretkey'
 
-/**
- * Simulation d'un compte avec un role
- */
-const users = [
-    { id: 1, username: 'foo', role: 'admin', password: 'password123' }
-]
-
 /* Ressource "S'authentifier": fournit un json webtoken POST /login */
 router.post('/login', (req, res) => {
     // Pas d'information à traiter
-    if (!req.body.username || !req.body.password) {
-        return res.status(400).json({ message: 'Error. Please enter the correct username and password' })
+    if (!req.body.pseudo || !req.body.password) {
+        return res.status(400).json({ message: 'Impossible de vous authentifier: mauvais pseudo ou mot de passe' })
     }
 
-    // Checking
-    const user = users.find(u => u.username === req.body.username && u.password === req.body.password)
+    // Identification et authentification
 
-    // Pas bon
-    if (!user) {
-        return res.status(400).json({ message: 'Error. Wrong login or password' })
-    }
+    connection.query("SELECT id, pseudo, role FROM Utilisateur WHERE pseudo = ? AND password = ? AND role='admin'", [req.body.pseudo, req.body.password], (error, rows, fields) => {
+        if (error || rows.length === 0) {
+            console.error('Pseudo non reconnu');
+            res.status(400).json({ "msg": "Impossible de vous authentifier: mauvais pseudo ou mot de passe" });
+            return
+        }
 
-    const token = jwt.sign({
-        id: user.id,
-        username: user.username
-    }, SECRET, { expiresIn: '3 hours' })
+        user = {
+            "id": (rows[0]).id,
+            "pseudo": (rows[0]).pseudo,
+            "role": (rows[0]).role,
+        }
 
-    return res.json({ access_token: token })
+        const token = jwt.sign({
+            id: user.id,
+            username: user.pseudo,
+            role: user.role,
+        }, SECRET, { expiresIn: '3 hours' })
+
+        return res.status(201).json({
+            "_links": {
+                "self": hal.halLinkObject('/login'),
+                "concerts": hal.halLinkObject('/concerts'),
+                "reservations": hal.halLinkObject('/concerts/{id}/reservations', 'string', 'Liste des réservations pour un concert donné', true),
+            },
+            "access_token": token
+        })
+    })
 })
 
 /**
@@ -61,41 +70,44 @@ const checkTokenMiddleware = (req, res, next) => {
 
     // Présence d'un token
     if (!token) {
-        return res.status(401).json({ message: 'Error. Need a token' })
+        return res.status(401).json({ "msg": "Vous n'êtes pas autorisé·e à accéder à cette ressource" })
     }
 
     // Véracité du token
     jwt.verify(token, SECRET, (err, decodedToken) => {
         if (err) {
-            res.status(401).json({ message: 'Error. Bad token' })
+            res.status(401).json({ "msg": "Vous n'êtes pas autorisé·e à accéder à cette ressource" })
         } else {
             return next() //appeler la fonction middleware suivante (enregistrée dans le routeur)
         }
     })
 }
 
-// /**
-//  * Démo de route protégée
-//  * @param {} headerValue 
-//  * @returns 
-//  */
-// router.get('/protected', checkTokenMiddleware, (req, res, next) => {
+/**
+ * Réservation d'une place de concert
+ * Toutes les réservations d'un concert : GET /concerts/:id/reservation
+ * Cette route ne doit être accessible qu'au gestionnaire du site
+ */
+router.get('/concerts/:id/reservations', checkTokenMiddleware, function (req, res, next) {
+    // #swagger.summary = "Lister toutes les réservations d'un concert "
 
-//     /**
-//      * A faire: trouver dans swagger-autogen comment indiquer Authorization: Bearer dans le header
-//      * pour insérer le token. En attendant, on peut toujours tester avec curl:
-//      * curl -X GET -H 'Authorization: Bearer <le jwt token généré sur la route /login>' http://localhost:5001/protected
-//      */
+    connection.query("SELECT u.pseudo, r.date_reservation, r.statut, c.id FROM Reservation r INNER JOIN Concert c ON r.id_concert=c.id INNER JOIN Utilisateur u ON r.id_utilisateur=u.id WHERE id_concert= ?", [req.params.id], (error, rows, fields) => {
+        if (error) {
+            res.status(400).json({ "msg": "Nous rencontrons des difficultés, merci de rééssayer plus tard." });
+            return
+        }
 
-//     /* #swagger.security = [{
-//                    [{ "Bearer": [] }]
-//             }] */
-//     // Récupération du token
-//     const token = req.headers.authorization && extractBearerToken(req.headers.authorization)
-//     // Décodage du token
-//     const decoded = jwt.decode(token, { complete: false })
-//     return res.json({ content: decoded })
-// })
-
+        res.status(200).json({
+            "_links": {
+                "self": { "href": "/concerts/" + req.params.id + "/reservations" },
+                "concert": { "href": "/concerts/" + req.params.id }
+            },
+            "_embedded": {
+                "reservations": rows.map(row => hal.mapReservationToResourceObject(row, req.baseUrl)),
+            },
+            "nbReservations" : rows.length
+        })
+    })
+})
 
 module.exports = router;

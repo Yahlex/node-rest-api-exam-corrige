@@ -57,15 +57,6 @@ router.get('/concerts/:id', function (req, res, next) {
 
 });
 
-/**
- * Réservation d'une place de concert
- * Toutes les réservations d'un concert : GET /concerts/:id/reservation
- * Cette route ne doit être accessible qu'au gestionnaire du site
- */
-router.get('/concerts/:id/reservation', function (req, res, next) {
-  // #swagger.summary = "Lister toutes les réservations d'un concert "
-
-})
 
 
 /**
