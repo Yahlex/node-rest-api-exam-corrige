@@ -2,6 +2,27 @@
 
 L'implémentation (avec node.js/Express/MySQL) du sujet d'examen du module API *RESTful*.
 
+- [Corrigé de l'examen *API RESTful*](#corrigé-de-lexamen-api-restful)
+  - [Sujet (Spécifications du système)](#sujet-spécifications-du-système)
+  - [Documentation sur la conception et les choix d'implémentation](#documentation-sur-la-conception-et-les-choix-dimplémentation)
+  - [Prérequis](#prérequis)
+  - [Lancer le projet avec Compose](#lancer-le-projet-avec-compose)
+  - [Base de données](#base-de-données)
+    - [Client graphique Adminer pour la base de données MySQL](#client-graphique-adminer-pour-la-base-de-données-mysql)
+    - [Créer la base de données test](#créer-la-base-de-données-test)
+  - [Tester l'installation](#tester-linstallation)
+  - [Documentation de l'API avec Swagger](#documentation-de-lapi-avec-swagger)
+  - [Installer et servir de nouvelles dépendances](#installer-et-servir-de-nouvelles-dépendances)
+  - [Arrêter le projet](#arrêter-le-projet)
+  - [Librairies JS notables installées via npm](#librairies-js-notables-installées-via-npm)
+  - [Autorisations gérées avec JWT](#autorisations-gérées-avec-jwt)
+  - [Ressources](#ressources)
+    - [Docker](#docker)
+    - [Express](#express)
+    - [Swagger](#swagger)
+    - [SGBDR](#sgbdr)
+
+
 ## Sujet (Spécifications du système)
 
 On désire mettre en ligne un service de réservation de billets de concert. Le service ne gère pas de base de données des utilisateurs : un·e utilisateur·ice est simplement identifié·e par un pseudo au moment de la réservation.
@@ -52,22 +73,11 @@ Démarrer le projet
 docker-compose up -d
 ~~~
 
-## Tester
+## Base de données
 
-### API
+L'`host` de la base de données est le nom du service sur le réseau du projet crée par Docker, soit `db`.
 
-Se rendre à l'URL [localhost:5001](http://localhost:5001), ou tester (avec [curl](https://curl.se/))
-
-~~~
-# Web humain (HTML)
-curl --include localhost:5001
-# API (JSON)
-curl --include localhost:5001/users
-~~~
-
-### Base de données
-
-Avec le client mysql
+Se connecter avec le client mysql
 
 ~~~
 mysql -uroot -proot -Dmydb -h127.0.0.1 -P5002
@@ -85,11 +95,7 @@ mysql -uroot -proot -Dmydb -h127.0.0.1 -P5002 < script.sql
 
 Se rendre à l'url [http://localhost:5003](http://localhost:5003) et se connecter avec les credentials *root* (login *root* et mot de passe *root* par défaut)
 
-## Base de données
-
-L'`host` de la base de données est le nom du service sur le réseau du projet crée par Docker, soit `db`.
-
-## Créer la base de données test
+### Créer la base de données test
 
 Se placer à la racine du projet. Créer le schéma de la base de données en *batch mode* :
 
@@ -103,9 +109,20 @@ Insérer le jeu de données test :
 mysql -uroot -proot -h127.0.0.1 -P5002 < scripts-sql/dataset.sql
 ~~~
 
+Ou utiliser Adminer.
+
+## Tester l'installation
+
+Se rendre à l'URL [localhost:5001](http://localhost:5001), ou tester (avec [curl](https://curl.se/))
+
+~~~
+# API (JSON) : lister les utilisateur·ices
+curl --include localhost:5001/users
+~~~
+
 ## Documentation de l'API avec Swagger
 
-Générer automatiquement la documentation de vos routes avec le module Swagger
+Générer automatiquement la documentation de vos routes avec le module Swagger. Dans le dossier `api` : 
 
 ~~~
 node swagger.js
@@ -122,7 +139,7 @@ Se rendre à l'URL `/doc` pour accéder à l'UI de Swagger
 ## Installer et servir de nouvelles dépendances
 
 - Stoper les containers avec Compose
-- A la racine de l'application, *installer* les dépendances désirées via `npm`
+- A la racine de l'application (`api/`), *installer* les dépendances désirées via `npm`
 - Reconstruire le conteneur `api`
 - Relancer les containers avec Compose
 
