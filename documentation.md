@@ -56,16 +56,16 @@ Décomposons ces données en ressources :
 
 ### 3. **Nommer** les ressources avec des URI
 
-- Ressource *Liste des concerts* : `/concerts`
+- Ressource *Les concerts à venir* : `/concerts`
 - Ressource *Informations sur un concert* : `/concerts/{id}`, où `id` est un identifiant unique d'un concert
-- Ressource *Liste des réservations d'un concert*: `/concerts/{id}/reservations`. 
+- Ressource *Réservation d'une place de concert*: `/concerts/{id}/reservations`. 
 
 ### 4. **Implémenter** un sous-ensemble de l'interface uniforme (`GET`, `POST`, `DELETE`, `PUT`) pour chaque ressource
 
 
-- Ressource *Liste des concerts* `/concerts` : `GET`
+- Ressource *Les concerts à venir* `/concerts` : `GET`
 - Ressource *Informations sur un concert* `/concerts/{id}` : `GET`
-- Ressource *Liste des réservations d'un concert* `/concerts/{id}/reservations` : `GET`, `POST`, `PUT`, `DELETE`
+- Ressource *Réservation d'une place de concert* `/concerts/{id}/reservations` : `GET`, `POST`, `PUT`, `DELETE`
 
 > `GET /concerts/{id}/reservations` est protégée, seul le gestionnaire du site pourra lister les réservations effectuées pour un concert (et donc la liste des pseudos des utilisateurs).
 
@@ -75,7 +75,7 @@ L'API renverra des données au format `application/hal+json`, en suivant la spé
 
 On définit ici les représentations des ressources envoyées par le serveur au client.
 
-#### Ressource *Liste des concerts* `/concerts` : 
+#### Ressource *Les concerts à venir* `/concerts` : 
 
 Schéma type
 
@@ -127,7 +127,9 @@ Schéma type
 }
 ~~~
 
-#### Ressource *Liste des réservations d'un concert* `GET /concerts/{id}/reservations`
+#### Ressource *Réservation d'une place de concert* `/concerts/{id}/reservations`
+
+Lister les réservations d'un concert : `GET /concerts/{id}/reservations`
 
 ~~~JSON
 {
@@ -150,9 +152,7 @@ Schéma type
 }
 ~~~
 
->Cette ressource ne sera accessible qu'a un utilisateur ayant le role d'administrateur !
-
-#### Ressource *Liste des réservations d'un concert* `/concerts/{id}/reservations`
+>Cette ressource n'est accessible qu'au gestionnaire du site !
 
 Effectuer une réservation `POST /concerts/{id}/reservations`
 
@@ -179,7 +179,11 @@ Effectuer une réservation `POST /concerts/{id}/reservations`
 
 Annuler une réservation : `DELETE /concerts/{id}/reservations`
 
+>Même schéma que précédemment
+
 Confirmer une réservation : `PUT /concerts/{id}/reservations`
+
+>Même schéma que précédemment
 
 >Ici, sous la clef `_links` on indique les ressources connexes, notamment les liens pour confirmer ou annuler la réservation. Vous remarquerez que ce sont les mêmes que self, alors pourquoi les mettre ? Pour indiquer à l'agent qui consomme l'API les actions possibles (on appelle ça le [link relation type](https://datatracker.ietf.org/doc/html/rfc5988#section-4), comme le contenu d'une balise a HTML). On n'indique pas la méthode HTTP, car on sait qu'on se conforte à l'interface uniforme (GET, POST, PUT, DELETE). Une requête `OPTIONS` sur la ressource indiquera à l'agent les verbes autorisés. Ici on a GET, POST, PUT et DELETE. GET est reservé pour lister les réservations d'un concert (route protégée), `POST` est utilisé pour effectuer une réservation. Il reste donc PUT et DELETE. DELETE va servir à annuler une reservation. Donc on peut facilement en déduire que PUT va confirmer la réservation. Si on a un doute, on peut toujours tester ! 
 
