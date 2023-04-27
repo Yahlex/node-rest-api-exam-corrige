@@ -5,22 +5,22 @@ USE mydb
 
 CREATE TABLE IF NOT EXISTS Concert(
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    nom VARCHAR(36) NOT NULL,
     nb_places INT NOT NULL,
     date_debut DATETIME NOT NULL,
-    nb_reservations INT NOT NULL DEFAULT 0,
     lieu TEXT NOT NULL,
-    resume TEXT NOT NULL,
-    CONSTRAINT ck_nb_salles CHECK (nb_places > 0)
+    artiste VARCHAR(120) NOT NULL,
+    description TEXT NOT NULL,
+    CONSTRAINT ck_nb_places CHECK (nb_places > 0)
 );
 
 
 CREATE TABLE IF NOT EXISTS Utilisateur(
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
     pseudo VARCHAR(36) NOT NULL,
-    password VARCHAR(36) NULL,
-    role ENUM('admin') NULL,
-    CONSTRAINT un_pseudo UNIQUE(pseudo)
+    password VARCHAR(36) NULL DEFAULT '',
+    role ENUM('admin','visitor') NULL DEFAULT 'visitor',
+    CONSTRAINT un_pseudo UNIQUE(pseudo),
+    INDEX (pseudo)
 );
 
 CREATE TABLE IF NOT EXISTS Reservation(
