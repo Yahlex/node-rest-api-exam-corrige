@@ -217,7 +217,7 @@ Schéma type :
      "_links": {
        "self": { "href": "/login" },
        "concerts": { "href": "/concerts/" },
-       "reservations": { "href": "/concerts/{id}/reservations" },
+       "reservations": { "href": "/concerts/{id}/reservations", "templated": true },
      },
      "token": "XXXX.YYYYY.ZZZZZ",
 }
