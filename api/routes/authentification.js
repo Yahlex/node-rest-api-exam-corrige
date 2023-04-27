@@ -4,7 +4,6 @@ var connection = require('../db');
 var hal = require('../hal')
 var jwt = require('jsonwebtoken')
 
-
 /**
  * Secret conservé côté serveur pour signer les JWT
  */
@@ -17,9 +16,7 @@ const users = [
     { id: 1, username: 'foo', role: 'admin', password: 'password123' }
 ]
 
-
-
-/* Formulaire de connexion: fournit un json webtoken */
+/* Ressource "S'authentifier": fournit un json webtoken POST /login */
 router.post('/login', (req, res) => {
     // Pas d'information à traiter
     if (!req.body.username || !req.body.password) {
@@ -73,28 +70,28 @@ const checkTokenMiddleware = (req, res, next) => {
     })
 }
 
-/**
- * Démo de route protégée
- * @param {} headerValue 
- * @returns 
- */
-router.get('/protected', checkTokenMiddleware, (req, res, next) => {
+// /**
+//  * Démo de route protégée
+//  * @param {} headerValue 
+//  * @returns 
+//  */
+// router.get('/protected', checkTokenMiddleware, (req, res, next) => {
 
-    /**
-     * A faire: trouver dans swagger-autogen comment indiquer Authorization: Bearer dans le header
-     * pour insérer le token. En attendant, on peut toujours tester avec curl:
-     * curl -X GET -H 'Authorization: Bearer <le jwt token généré sur la route /login>' http://localhost:5001/protected
-     */
+//     /**
+//      * A faire: trouver dans swagger-autogen comment indiquer Authorization: Bearer dans le header
+//      * pour insérer le token. En attendant, on peut toujours tester avec curl:
+//      * curl -X GET -H 'Authorization: Bearer <le jwt token généré sur la route /login>' http://localhost:5001/protected
+//      */
 
-    /* #swagger.security = [{
-                   [{ "Bearer": [] }]
-            }] */
-    // Récupération du token
-    const token = req.headers.authorization && extractBearerToken(req.headers.authorization)
-    // Décodage du token
-    const decoded = jwt.decode(token, { complete: false })
-    return res.json({ content: decoded })
-})
+//     /* #swagger.security = [{
+//                    [{ "Bearer": [] }]
+//             }] */
+//     // Récupération du token
+//     const token = req.headers.authorization && extractBearerToken(req.headers.authorization)
+//     // Décodage du token
+//     const decoded = jwt.decode(token, { complete: false })
+//     return res.json({ content: decoded })
+// })
 
 
 module.exports = router;
