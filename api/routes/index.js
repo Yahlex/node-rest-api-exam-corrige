@@ -3,29 +3,6 @@ var router = express.Router();
 var connection = require('../db');
 var hal = require('../hal')
 
-
-
-/**
- * Dummy: exemple de requete POST auto documentée par Swagger-autogen
- */
-router.post('/foobar', function (req, res, next) {
-
-  /*  #swagger.parameters['obj'] = {
-                in: 'body',
-                description: 'Some description...',
-                schema: {
-                    $name: 'Jhon Doe',
-                    $age: 29,
-                    about: ''
-                }
-        } */
-
-  console.log(req.body)
-  res.status(200).set('Content-Type', 'text/html').send('POST /concerts/{id}')
-})
-
-
-
 /* GET /concerts */
 router.get('/concerts', function (req, res, next) {
 
@@ -34,7 +11,8 @@ router.get('/concerts', function (req, res, next) {
   connection.query('SELECT * FROM Concert;', (error, rows, fields) => {
 
     if (error) {
-      console.error('Error connecting: ' + err.stack);
+      console.error('Error connecting: ' + error.stack);
+      res.status(404).json({ message: 'Erreur: La ressource demandée n\'existe pas' })
       return;
     }
 
@@ -56,11 +34,6 @@ router.get('/concerts', function (req, res, next) {
 router.get('/concerts/:id', function (req, res, next) {
 
   // #swagger.summary = "Détail d'un concert"
-
-  console.log(req.params.id)
-
-  //Non ! Sensible aux injection SQL. Essayer une injection SQL avec :name=AAA OR 1=1
-  // connection.query('SELECT * FROM Concert WHERE nom = ' + req.params.name, (error, rows, fields) => {
 
   connection.query('SELECT * FROM Concert WHERE id = ?;', [req.params.id], (error, rows, fields) => {
 
@@ -122,11 +95,7 @@ router.post('/concerts/:id/reservation', function (req, res, next) {
 
   //On doit récupérer la représentation du client: le pseudo de l'utilisateur qui reserve
 
-  console.log(req.body)
-
   const pseudo = req.body.pseudo
-
-  console.log(pseudo)
 
   //Verifier qu'il y'a bien un pseudo (Representation envoyée par le client)
 

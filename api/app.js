@@ -5,11 +5,9 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var authRouter = require('./routes/authentification');
-const swaggerUi = require('swagger-ui-express')
-const swaggerFile = require('./swagger_output.json')
+var swaggerUi = require('swagger-ui-express')
+var swaggerFile = require('./swagger_output.json')
 var bodyParser = require('body-parser');
-var jsonwebtoken = require('jsonwebtoken')
-
 
 var app = express();
 
@@ -23,13 +21,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
-
-/**
- * Authentification
- */
-
-
 
 
 /**
