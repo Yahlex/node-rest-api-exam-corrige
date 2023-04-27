@@ -259,15 +259,15 @@ Scénario nominal (où tout se passe bien)
 
 ### 9. Envisager les cas d'erreurs
 
-> Beaucoup de cas à envisager, non exhaustif ici
+> Beaucoup de cas à envisager, en ai-je oubliés ?
 
 - L'utilisateur essaie d'effectuer une reservation pour un concert alors qu'il en a déjà une (confirmée) : le système doit rejeter la demande
-- L'utilisateur essaie d'effectuer une reservation pour un concert alors qu'il en a déjà une (annulée) : Il doit pouvoir le faire, il peut avoir changer d'avis
+- L'utilisateur essaie d'effectuer une reservation pour un concert alors qu'il en a déjà une (annulée) : le système doit autoriser la demande, il peut avoir changer d'avis
 - Il n'y a plus de places disponibles pour le concert : le système doit rejeter toute demande de réservation tant qu'une réservation n'est pas annulée
 - Un utilisateur essaie d'effectuer une réservation pour un concert déjà passé : le système doit rejeter la demande
 
 
-> Evidemment, nous n'aborderons pas les points liés à la sécurité, étant donné qu'il n'y a pas de système d'authentification et donc d'autorisations sur le système (seulement pour le gestionnaire de site).
+> Evidemment, nous n'abordons pas ici les points liés à la sécurité, étant donné qu'il n'y a pas de système d'authentification et donc d'autorisations sur le système ! (seulement pour le gestionnaire de site).
 
 ## Conception de la base de données relationnelle
 
