@@ -17,7 +17,6 @@
     - [8. Envisager la progression typique des évènements](#8-envisager-la-progression-typique-des-évènements)
     - [9. Envisager les cas d'erreurs](#9-envisager-les-cas-derreurs)
   - [Conception de la base de données relationnelle](#conception-de-la-base-de-données-relationnelle)
-    - [Dictionnaire des données](#dictionnaire-des-données)
     - [Conception de la base de données: du MCD au MPD](#conception-de-la-base-de-données-du-mcd-au-mpd)
 
 
@@ -224,14 +223,14 @@ Le client enverra sa représentation au format `application/x-www-form-urlencode
 >pseudo requête HTTP
 
 ~~~HTTP
-POST /concerts/1/reservations
+POST /concerts/1/reservations HTTP/1.1
 
 pseudo=john
 ~~~
 
 #### Confirmer une réservation 
 
->pseudo requête HTTP
+>pseudo requête HTTP 
 
 ~~~HTTP
 PUT /concerts/1/reservations HTTP/1.1
@@ -272,7 +271,19 @@ Scénario nominal (où tout se passe bien)
 
 ## Conception de la base de données relationnelle
 
-### Dictionnaire des données
+D'après notre travail sur le dictionnaire des données et sur les ressources, on dégage 3 relations :
+
+- **Concert**: date_debut, lieu, nb_places, description, artiste
+- **Réservation**: statut, date_reservation
+- **Utilisateur**: pseudo, password, role
+
+> Les propriétés `password` et `role` serviront pour traiter le bonus (accès à la ressource protégée par le gestionnaire du site)
 
 ### Conception de la base de données: du MCD au MPD
+
+Voici un schéma UML du modèle conceptuel des données
+
+Voici un schéma UML du modèle relationnel (traduction du modèle conceptuel (objet) dans le modèle relationnel)
+
+De ce travail nous en déduisons le niveau physique, et [le script SQL (pour MySQL ici)](./scripts-sql/schema.sql).
 
