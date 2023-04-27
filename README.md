@@ -87,7 +87,7 @@ Se connecter avec le client mysql
 mysql -uroot -proot -Dmydb -h127.0.0.1 -P5002
 ~~~
 
-Pour éxecuter un script SQL en *Batch mode*
+Pour exécuter un script SQL en *Batch mode*
 
 ~~~
 mysql -uroot -proot -Dmydb -h127.0.0.1 -P5002 < script.sql
@@ -129,7 +129,7 @@ curl --include localhost:5001/concerts
 Se rendre à l'URL /doc pour accéder à la documentation de l'API générée avec Swagger ou utiliser directement curl
 
 ~~~
-curl -X <verbe HTTP> -i <URI> -d <forumaire>
+curl -X <verbe HTTP> -i <URI> -d <formulaire>
 ~~~
 
 Par exemple, pour effectuer une réservation
@@ -156,8 +156,8 @@ Se rendre à l'URL `/doc` pour accéder à l'UI de Swagger
 
 ## Installer et servir de nouvelles dépendances
 
-- Stoper les containers avec Compose
-- A la racine de l'application (`api/`), *installer* les dépendances désirées via `npm`
+- Stopper les containers avec Compose
+- À la racine de l'application (`api/`), *installer* les dépendances désirées via `npm`
 - Reconstruire le conteneur `api`
 - Relancer les containers avec Compose
 
@@ -196,7 +196,7 @@ docker logs -f billeterie-api
 ## Librairies JS notables installées via npm
 
 - [bodyParser](https://www.npmjs.com/package/body-parser), un parser du corps de requête pour les applications node. On s'en sert pour parser les représentations envoyées par le client dans nos contrôleurs avec l'instruction `app.use(bodyParser.urlencoded({ extended: true }));`
-- [jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken), une implémentation javascript du standard JSON Web Token, voir [RFC 7519](https://www.rfc-editor.org/rfc/rfc7519)
+- [jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken), une implémentation JavaScript du standard JSON Web Token, voir [RFC 7519](https://www.rfc-editor.org/rfc/rfc7519)
 - [mysql](https://github.com/mysqljs/mysql), driver node.js pour MySQL
 
 ## Autorisations gérées avec JWT
@@ -221,15 +221,15 @@ Pour **autoriser** (et donc authentifier) l'utilisateur à interagir avec les re
 
 - [Générateur d’applications Express](https://expressjs.com/fr/starter/generator.html), générer un projet pour démarrer
 - [Routage](https://expressjs.com/fr/guide/routing.html), la documentation sur le routage d'Express
-- [Pug](https://pugjs.org/api/getting-started.html), moteur de templates javascript installé par défaut avec Express
+- [Pug](https://pugjs.org/api/getting-started.html), moteur de templates JavaScript installé par défaut avec Express
 
 ### Swagger
 
-- [Swagger UI](https://github.com/swagger-api/swagger-ui), documenter une web API RESTful (même si elle devrait être *par définition* auto-documentée et *auto-descriptive*)
+- [Swagger UI](https://github.com/swagger-api/swagger-ui), documenter une web API RESTful (même si elle devrait être *par définition* autodocumentée et *autodescriptive*)
 - [Swagger UI Express](https://www.npmjs.com/package/swagger-ui-express), module node.js pour générer la documentation de l'API avec Express
 - [Swagger auto-gen](https://www.npmjs.com/package/swagger-autogen), module de génération *automatique* de la documentation de l'API dans une application node.js/Express. Voir notamment la documentation pour documenter automatiquement les endpoints (résumé, description, paramètres)
 - [Swagger auto-gen: décrire des paramètres de formulaire POST](https://www.npmjs.com/package/swagger-autogen#parameters)
-- [OpenAPI Specification](https://github.com/OAI/OpenAPI-Specification), un standard de description d'une web API comptabile avec REST
+- [OpenAPI Specification](https://github.com/OAI/OpenAPI-Specification), un standard de description d'une web API compatible avec REST
 
 ### SGBDR
 

@@ -55,13 +55,13 @@ Légende:
 |  Code 	| Désignation  	| Type  	|  Taille (nb caractères ou chiffres) 	| Remarque  	|
 |---	|---	|---	|---	|---	|
 |   `pseudo`	|  Le pseudo d’un utilisateur 	|   AN	|   12	|    Identifie de manière unique l’utilisateur	|
-|   `description`	|  Un texte court qui décrit le concert, son contexte, 	|   AN	|   1000	|   	|
+|   `description`	|  Un texte court qui décrit le concert, son contexte 	|   AN	|   1000	|   	|
 |   `artiste`	|   Le nom de l'artiste qui se produit lors du concert	|   AN	|  120 	|   	|
 |   `date_debut`	|   Date et horaire du concert	|  D 	|   20	|   YYYY-mm-dd HH:mm:ss (et TimeZone)	|
-|   `date_reservation`	|   Date à laquelle l’utilisateur reserve sa place	|  D 	|   20	|   Attention, ce n'est pas la date a laquelle iel confirme la réservation	|
+|   `date_reservation`	|   Date à laquelle l’utilisateur réserve sa place	|  D 	|   20	|   Attention, ce n'est pas la date à laquelle iel confirme la réservation.	|
 |   `lieu`	|  Lieu, salle où se déroule le concert  	|   AN	|   120	|   	|
 |   `nb_places`	|  Le nombre de places disponibles à la réservation pour un concert  	|   N	|   < 100 000	|   	|
-|   `statut`	|  État d’une réservation. 3 statuts possibles : A confirmer, Confirmée, Annulée  	|   N	|   14	|  Lorsqu’une réservation est créée, elle a par défaut le statut "À confirmer". Elle doit ensuite être confirmée par l'utilisateur. Un utilisateur qui a confirmé sa reservation ne peut plus l’annuler ! 	|
+|   `statut`	|  État d’une réservation. 3 statuts possibles : A confirmer, Confirmée, Annulée  	|   N	|   14	|  Lorsqu’une réservation est créée, elle a par défaut le statut "À confirmer". Elle doit ensuite être confirmée par l'utilisateur. Un utilisateur qui a confirmé sa réservation ne peut plus l’annuler ! 	|
 |   `a_confirmer`	|  Statut d’une réservation en attente de confirmation  	|   A	|   14	|   Ce statut peut passer à l’état Confirmée ou Annulée	|
 |   `confirmee`	|  Statut d’une réservation confirmée  	|   A	|   14	|   Ne peut s’appliquer que sur un statut dans l’état a_confirmer. Cet état ne peut plus changer par la suite	|
 |   `annulee`	|  Statut d’une réservation annulée  	|   A	|   14	|   Ce statut ne peut plus changer par la suite	|
@@ -206,7 +206,7 @@ Confirmer une réservation : `PUT /concerts/{id}/reservations`
 
 >Même schéma que précédemment
 
->Ici, sous la clef `_links` on indique les ressources connexes, notamment les liens pour confirmer ou annuler la réservation. Vous remarquerez que ce sont les mêmes que self, alors pourquoi les mettre ? Pour indiquer à l'agent qui consomme l'API les actions possibles (on appelle ça le [link relation type](https://datatracker.ietf.org/doc/html/rfc5988#section-4), comme le contenu d'une balise a HTML). On n'indique pas la méthode HTTP, car on sait qu'on se conforte à l'interface uniforme (GET, POST, PUT, DELETE). Une requête `OPTIONS` sur la ressource indiquera à l'agent les verbes autorisés. Ici on a GET, POST, PUT et DELETE. GET est reservé pour lister les réservations d'un concert (route protégée), `POST` est utilisé pour effectuer une réservation. Il reste donc PUT et DELETE. DELETE va servir à annuler une reservation. Donc on peut facilement en déduire que PUT va confirmer la réservation. Si on a un doute, on peut toujours tester ! 
+>Ici, sous la clef `_links` on indique les ressources connexes, notamment les liens pour confirmer ou annuler la réservation. Vous remarquerez que ce sont les mêmes que self, alors pourquoi les mettre ? Pour indiquer à l'agent qui consomme l'API les actions possibles (on appelle ça le [link relation type](https://datatracker.ietf.org/doc/html/rfc5988#section-4), comme le contenu d'une balise a HTML). On n'indique pas la méthode HTTP, car on sait qu'on se conforte à l'interface uniforme (GET, POST, PUT, DELETE). Une requête `OPTIONS` sur la ressource indiquera à l'agent les verbes autorisés. Ici on a GET, POST, PUT et DELETE. GET est réservé pour lister les réservations d'un concert (route protégée), `POST` est utilisé pour effectuer une réservation. Il reste donc PUT et DELETE. DELETE va servir à annuler une réservation. Donc on peut facilement en déduire que PUT va confirmer la réservation. Si on a un doute, on peut toujours tester ! 
 
 #### Ressource *S'authentifier* : `POST /login`
 
@@ -227,9 +227,9 @@ Schéma type :
 
 Maintenant, il faut déterminer les représentations que les clients peuvent fabriquer et qui seront comprises par le serveur. Il faut définir la représentation pour :
 
-- créer une reservation
-- confirmer une reservation
-- annuler une reservation
+- créer une réservation
+- confirmer une réservation
+- annuler une réservation
 - s'authentifier
 
 Le client enverra sa représentation au format `application/x-www-form-urlencoded` (forumlaire), soit de simples clef=valeur dans le corps de la requête HTTP.
@@ -280,25 +280,25 @@ password=password
 Scénario nominal (où tout se passe bien)
 
 - Un utilisateur accède à la liste des concerts
-- L'utilisateur repère un concert qui l'interesse, accéde aux détails sur le concert
+- L'utilisateur repère un concert qui l'intéresse, accède aux détails sur le concert
 - L'utilisateur décide de réserver le concert
 - L'utilisateur confirme sa réservation
 
 ### 9. Envisager les cas d'erreurs
 
-> Beaucoup de cas à envisager, en ai-je oubliés ?
+> Beaucoup de cas à envisager, en ai-je oublié ?
 
-- L'utilisateur essaie d'effectuer une reservation pour un concert alors qu'il en a déjà une (confirmée) : le système doit rejeter la demande
-- L'utilisateur essaie d'effectuer une reservation pour un concert alors qu'il en a déjà une (annulée) : le système doit autoriser la demande, il peut avoir changer d'avis
+- L'utilisateur essaie d'effectuer une réservation pour un concert alors qu'il en a déjà une (confirmée) : le système doit rejeter la demande
+- L'utilisateur essaie d'effectuer une réservation pour un concert alors qu'il en a déjà une (annulée) : le système doit autoriser la demande, il peut avoir changé d'avis
 - Il n'y a plus de places disponibles pour le concert : le système doit rejeter toute demande de réservation tant qu'une réservation n'est pas annulée
 - Un utilisateur essaie d'effectuer une réservation pour un concert déjà passé : le système doit rejeter la demande
-- Un utilisateur essaie d'annuler une reservation confirmée : le système doit rejeter la demande (voir specs)
-- Un utilisateur essaie de confirmer une reservation annulée : le système doit rejeter la demande (voir specs)
+- Un utilisateur essaie d'annuler une réservation confirmée : le système doit rejeter la demande (voir specs)
+- Un utilisateur essaie de confirmer une réservation annulée : le système doit rejeter la demande (voir specs)
 
 
-> Evidemment, nous n'abordons pas ici les points liés à la sécurité, étant donné qu'il n'y a pas de système d'authentification et donc d'autorisations sur le système ! (seulement pour le gestionnaire de site).
+> Évidemment, nous n'abordons pas ici les points liés à la sécurité, étant donné qu'il n'y a pas de système d'authentification et donc d'autorisations sur le système ! (seulement pour le gestionnaire de site).
 
-> Prévoir ces cas permet notamment de s'assurer de l'idempotence des requête POST qui ne sont ni sûres, ni idempotente.
+> Prévoir ces cas permet notamment de s'assurer de l'idempotence des requête POST qui ne sont ni sûres ni idempotentes.
 
 ## Conception de la base de données relationnelle
 
@@ -308,7 +308,7 @@ D'après notre travail sur le dictionnaire des données et sur les ressources, o
 - **Réservation**: statut, date_reservation
 - **Utilisateur**: pseudo, password, role
 
-> Les propriétés `password` et `role` serviront pour traiter le bonus (accès à la ressource protégée par le gestionnaire du site)
+> Les propriétés `password` et `role` serviront à traiter le Bonus 1 (accès à la ressource protégée par le gestionnaire du site)
 
 ### Conception de la base de données: du MCD au MPD
 
@@ -318,7 +318,7 @@ Voici un schéma UML du modèle conceptuel des données :
 
 Voici un schéma UML du modèle relationnel (traduction du modèle conceptuel (objet) dans le modèle relationnel) :
 
-<img src="./diagramme-uml-ModeleRelationnel.png" width="600px" alt ="Diagramme UML du Modèle Relationnel des données">
+<img src="./diagramme-uml-ModeleRelationnel.png" width="600px" alt ="Diagramme UML du Modèle relationnel des données">
 
 De ce travail, nous en déduisons le niveau physique, et [le script SQL (pour MySQL ici)](./scripts-sql/schema.sql).
 
