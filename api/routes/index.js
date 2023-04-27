@@ -2,35 +2,31 @@ var express = require('express');
 var router = express.Router();
 var connection = require('../db');
 var hal = require('../hal')
+var repo = require('../queries')
 
-/* GET /concerts */
+
+/* Les concerts à venir GET /concerts */
 router.get('/concerts', function (req, res, next) {
 
   // #swagger.summary = "Liste des concerts"
 
-  connection.query('SELECT * FROM Concert;', (error, rows, fields) => {
+  concerts = repo.findAllConcerts(req)
 
-    if (error) {
-      console.error('Error connecting: ' + error.stack);
-      res.status(404).json({ message: 'Erreur: La ressource demandée n\'existe pas' })
-      return;
+  console.log(concerts)
+
+  //Fabriquer Ressource Object Concerts en respectant la spec HAL
+  const concertsResourceObject = {
+    "_embedded": {
+      "concerts": rows.map(row => hal.mapConcertoResourceObject(row, req.baseUrl))
     }
+  }
 
-    //Fabriquer Ressource Object Concerts en respectant la spec HAL
-    const concertsResourceObject = {
-      "_embedded": {
-        "concerts": rows.map(row => hal.mapConcertoResourceObject(row, req.baseUrl))
-      }
-    }
-
-    res.set('Content-Type', 'application/hal+json');
-    res.status(200);
-    res.json(concertsResourceObject);
-  })
-
+  res.set('Content-Type', 'application/hal+json');
+  res.status(200);
+  res.json(concertsResourceObject);
 });
 
-/* GET /concerts */
+/* Informations sur un concert : GET /concert/{id} */
 router.get('/concerts/:id', function (req, res, next) {
 
   // #swagger.summary = "Détail d'un concert"
@@ -62,8 +58,8 @@ router.get('/concerts/:id', function (req, res, next) {
 });
 
 /**
- * Créer une reservation pour le concert
- * GET /concerts/:name/reservation
+ * Réservation d'une place de concert
+ * Toutes les réservations d'un concert : GET /concerts/:id/reservation
  */
 router.get('/concerts/:id/reservation', function (req, res, next) {
 
@@ -72,26 +68,34 @@ router.get('/concerts/:id/reservation', function (req, res, next) {
 
 
 /**
- * Créer une reservation pour le concert
- * PUT /concerts/:name/reservation
+ * Réservation d'une place de concert
+ * Confirmer la réservation pour un concert : PUT /concerts/:id/reservation
  */
 router.put('/concerts/:id/reservation', function (req, res, next) {
 
 })
 
 /**
- * Créer une reservation pour le concert
- * POST /concerts/:name/reservation
+ * Réservation d'une place de concert
+ * Annuler la réservation pour un concert : DELETE /concerts/:id/reservation
+ */
+router.delete('/concerts/:id/reservation', function (req, res, next) {
+
+})
+
+/**
+ * Réservation d'une place de concert
+ * Effectuer une réservation pour un concert : POST /concerts/:id/reservation
  */
 router.post('/concerts/:id/reservation', function (req, res, next) {
 
-/* #swagger.parameters['pseudo'] = {
-        in: 'formData',
-        description: 'Le pseudo de l\'utilisateur qui effectue la réservation',
-        required: 'true',
-        type: 'string',
-        format: 'application/x-www-form-urlencoded',
-} */
+  /* #swagger.parameters['pseudo'] = {
+          in: 'formData',
+          description: 'Le pseudo de l\'utilisateur qui effectue la réservation',
+          required: 'true',
+          type: 'string',
+          format: 'application/x-www-form-urlencoded',
+  } */
 
   //On doit récupérer la représentation du client: le pseudo de l'utilisateur qui reserve
 
@@ -107,35 +111,8 @@ router.post('/concerts/:id/reservation', function (req, res, next) {
 
   res.set('Content-Type', 'application/hal+json');
   res.status(201);
-  res.json({});  
+  res.json({});
 
 })
-
-
-//GET /utilisateurs (pour le role d'admin)
-router.get('/utilisateurs', function (req, res, next) {
-
-  // #swagger.summary = "Liste des utilisateurs"
-
-  connection.query('SELECT pseudo FROM Utilisateur;', (error, rows, fields) => {
-
-    if (error) {
-      console.error('Error connecting: ' + err.stack);
-      return;
-    }
-
-    // //Fabriquer Ressource Object Utilisateurs (Root Document) en respectant la spec HAL
-    const utilisateursResourceObject = {
-      "_embedded": {
-        "utilisateurs": rows.map(row => hal.mapUtilisateurtoResourceObject(row, req.baseUrl))
-      }
-    }
-
-    res.set('Content-Type', 'application/hal+json');
-    res.status(200);
-    res.json(utilisateursResourceObject);
-  })
-
-});
 
 module.exports = router;

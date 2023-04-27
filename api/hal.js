@@ -34,14 +34,14 @@ function mapConcertoResourceObject(concertData, baseURL) {
             "self": halLinkObject(baseURL + '/concerts' + '/' + concertData.id, 'string'),
             "reservation": halLinkObject(baseURL + '/concerts' + '/' + concertData.id + '/reservation', 'string')
         }],
-        "_embedded": {
-            "name": concertData.nom,
-            "id": concertData.id,
-            "date": concertData.date_debut,
-            "nb_places_restantes": concertData.nb_places - concertData.nb_reservations,
-            "lieu": concertData.lieu,
-            "description": concertData.resume
-        }
+
+        "name": concertData.nom,
+        "id": concertData.id,
+        "date": concertData.date_debut,
+        "nb_places_restantes": concertData.nb_places - concertData.nb_reservations,
+        "lieu": concertData.lieu,
+        "description": concertData.resume
+
     }
 }
 
@@ -58,7 +58,7 @@ function mapUtilisateurtoResourceObject(utilisateurData, baseURL) {
             "self": halLinkObject(baseURL + '/utilisateurs' + '/' + utilisateurData.pseudo, 'string'),
         }],
         "_embedded": {
-            "pseudo" : utilisateurData.pseudo
+            "pseudo": utilisateurData.pseudo
         }
     }
 
