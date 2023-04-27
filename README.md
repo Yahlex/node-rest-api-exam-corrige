@@ -13,10 +13,12 @@ L'implémentation (avec node.js/Express/MySQL) du sujet d'examen du module API *
   - [Tester l'installation](#tester-linstallation)
   - [Documentation de l'API avec Swagger](#documentation-de-lapi-avec-swagger)
   - [Installer et servir de nouvelles dépendances](#installer-et-servir-de-nouvelles-dépendances)
+  - [Remarques](#remarques)
   - [Arrêter le projet](#arrêter-le-projet)
   - [Librairies JS notables installées via npm](#librairies-js-notables-installées-via-npm)
   - [Autorisations gérées avec JWT](#autorisations-gérées-avec-jwt)
   - [Ressources](#ressources)
+    - [HTTP](#http)
     - [Docker](#docker)
     - [Express](#express)
     - [Swagger](#swagger)
@@ -153,6 +155,10 @@ docker-compose build api
 docker-compose up -d
 ~~~
 
+## Remarques
+
+- Actuellement le projet utilise la libraire [mysql](https://github.com/mysqljs/mysql) node.js. Cette libraire est bien mais assez limitée, notamment elle nous force à se retrouver dans un *callback hell* car elle n'utilise pas le mécanisme des promesses. Il pourrait être intéressant soit de passer à [mysql2](https://www.npmjs.com/package/mysql2) (évolution de muysql, avec une gestion des exceptions et de meilleures performences), soit d'utiliser l'ORM [sequlezise](https://sequelize.org/) (bonus 2 de l'examen)
+
 ## Arrêter le projet
 
 ~~~
@@ -163,6 +169,7 @@ docker-compose down
 
 - [bodyParser](https://www.npmjs.com/package/body-parser), un parser du corps de requête pour les applications node. On s'en sert pour parser les représentations envoyées par le client dans nos contrôleurs avec l'instruction `app.use(bodyParser.urlencoded({ extended: true }));`
 - [jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken), une implémentation javascript du standard JSON Web Token, voir [RFC 7519](https://www.rfc-editor.org/rfc/rfc7519)
+- [mysql](https://github.com/mysqljs/mysql), driver node.js pour MySQL
 
 ## Autorisations gérées avec JWT
 
@@ -171,6 +178,10 @@ docker-compose down
 Pour **autoriser** (et donc authentifier) l'utilisateur à interagir avec les ressources, on utilise un JSON Web Token. Implémentée dans le projet avec le package [jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken).
 
 ## Ressources
+
+### HTTP
+
+- [La liste des codes statut HTTP (MDN)](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status)
 
 ### Docker
 

@@ -38,13 +38,8 @@ router.get('/concerts/:id', function (req, res, next) {
   //Les détails d'un concert avec le nombre de places restantes
   connection.query("SELECT id, lieu, artiste, date_debut, nb_places, description, COUNT(*) as nb_reservations FROM Concert c INNER JOIN Reservation r ON c.id=r.id_concert WHERE r.statut != 'annule' AND c.id= ? GROUP BY (c.id)", [req.params.id], (error, rows, fields) => {
 
-    if (error) {
+    if (error || rows.length !== 1) {
       console.error('Error connecting: ' + err.stack);
-      return;
-    }
-
-    //On devrait n'avoir qu'un concert (l'URI désigne uniquement la ressource concert :name)
-    if (rows.length !== 1) {
       res.status(500).json('Une erreur est survenue');
     }
 
@@ -94,7 +89,6 @@ router.delete('/concerts/:id/reservation', function (req, res, next) {
  * Effectuer une réservation pour un concert : POST /concerts/:id/reservation
  */
 router.post('/concerts/:id/reservation', function (req, res, next) {
-
   /* #swagger.parameters['pseudo'] = {
           in: 'formData',
           description: 'Le pseudo de l\'utilisateur qui effectue la réservation',
@@ -103,21 +97,38 @@ router.post('/concerts/:id/reservation', function (req, res, next) {
           format: 'application/x-www-form-urlencoded',
   } */
 
-  //On doit récupérer la représentation du client: le pseudo de l'utilisateur qui reserve
 
-  const pseudo = req.body.pseudo
+
 
   //Verifier qu'il y'a bien un pseudo (Representation envoyée par le client)
+  if (!req.body.pseudo) {
+    console.error('Pseudo non fourni pour la reservation');
+    res.status(400).json({ "msg": "Merci de fournir un pseudo pour effectuer une réservation." });
+  }
 
   //Verifier que l'utilisateur existe
 
-  //Verifier que la reservation n'existe pas encore
+  //Les détails d'un concert avec le nombre de places restantes
+  connection.query("SELECT pseudo FROM Utilisateur WHERE pseudo = ?", [req.body.pseudo], (error, rows, fields) => {
 
-  //Créer la réservation avec status 'à confirmer',
+    if (error || rows.length === 0) {
+      console.error('Pseudo non reconnu');
+      res.status(403).json({ "msg": "Impossible de vous identifier, vous ne pouvez pas effectuer de réservation." });
+    }
 
-  res.set('Content-Type', 'application/hal+json');
-  res.status(201);
-  res.json({});
+
+    //Verifier que la reservation avec le statut 'a_confirmer' ou 'confirme' n'existe pas encore
+
+    //Créer la réservation avec status 'a_confirmer',
+
+    res.set('Content-Type', 'application/hal+json');
+    res.status(201);
+    res.json("OK");
+  })
+
+
+
+
 
 })
 
