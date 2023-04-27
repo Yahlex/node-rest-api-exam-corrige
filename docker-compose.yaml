@@ -29,6 +29,7 @@ services:
       - ${HOST_PORT_DB}:3306
     container_name: ${PROJECT_NAME}-mysql
 
+  # Un client graphique pour la base de données MySQL
   adminer:
     image: adminer
     restart: always
