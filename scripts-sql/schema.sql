@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS Reservation(
     id_concert INTEGER,
     id_utilisateur INTEGER,
     statut ENUM('a_confirme','confirme','annule'),
-    CONSTRAINT pk_reservation PRIMARY KEY(id_concert, id_utilisateur),
+    CONSTRAINT pk_reservation PRIMARY KEY(id_concert, id_utilisateur, statut),
     CONSTRAINT fk_concert FOREIGN KEY (id_concert) REFERENCES Concert(id),
     CONSTRAINT fk_utilisateur FOREIGN KEY (id_utilisateur) REFERENCES Utilisateur(id)
 );
