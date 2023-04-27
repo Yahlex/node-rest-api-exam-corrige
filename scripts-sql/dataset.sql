@@ -3,7 +3,6 @@
 -- Format standard de la chaine de caractère d'un datetime 'YYYY-mm-dd hh:mm:ss'
 USE mydb;
 
-
 -- Concerts
 INSERT INTO
     Concert (
@@ -29,14 +28,14 @@ VALUES
         'Lore ipsum'
     );
 
--- Utilisateurs
+-- Utilisateurs et gestionnaire de site 'ed'
 INSERT INTO
-    Utilisateur (pseudo)
+    Utilisateur (pseudo, role, password)
 VALUES
-    ('john'),
-    ('eve44'),
-    ('jenny');
-
+    ('john', 'visitor', ''),
+    ('eve44', 'visitor', ''),
+    ('jenny', 'visitor', ''),
+    ('ed', 'admin', 'password');
 
 -- Reservations
 INSERT INTO
