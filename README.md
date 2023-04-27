@@ -174,6 +174,8 @@ docker-compose up -d
 ## Remarques
 
 - Actuellement le projet utilise la libraire [mysql](https://github.com/mysqljs/mysql) node.js. Cette libraire est bien mais elle nous force à se retrouver dans un *callback hell*, car elle n'utilise pas l'[API des Promesses](https://developer.mozilla.org/fr/docs/Web/JavaScript/Guide/Using_promises). Il pourrait être intéressant soit de passer à [mysql2](https://www.npmjs.com/package/mysql2) (évolution du driver mysql, avec une gestion des promesses et de meilleures performances), soit d'utiliser l'ORM [sequlezise](https://sequelize.org/) (bonus 2 de l'examen)
+- La correction se concentre sur la conception de l'API et sur son interface (représentations échangées et respect des contraintes REST). Il y a beaucoup à faire concernant le code applicatif (factorisation, élimination des callbacks hell, création de nombreuses fonctions, etc.) Cette tâche est laissée en exercice.
+- Vous l'aurez compris, *cette solution (et les specs !) ne se concentre pas sur les aspects de sécurité* pour des raisons pédagogiques. Par exemple, *il ne faut jamais stocker les mots de passe en clair en base de données* ! De nombreux points d'amélioration sont laissés en guise d'exercice. 
 
 ## Arrêter le projet
 

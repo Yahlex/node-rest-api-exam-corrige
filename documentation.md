@@ -10,10 +10,12 @@
       - [Ressource *Les concerts à venir* `/concerts` :](#ressource-les-concerts-à-venir-concerts-)
       - [Ressource *Informations sur un concert* `/concerts/{id}`](#ressource-informations-sur-un-concert-concertsid)
       - [Ressource *Réservation d'une place de concert* `/concerts/{id}/reservations`](#ressource-réservation-dune-place-de-concert-concertsidreservations)
+      - [Ressource *S'authentifier* : `POST /login`](#ressource-sauthentifier--post-login)
     - [6. **Concevoir** la ou les représentations à mettre à disposition des clients](#6-concevoir-la-ou-les-représentations-à-mettre-à-disposition-des-clients)
       - [Faire une réservation](#faire-une-réservation)
       - [Confirmer une réservation](#confirmer-une-réservation)
       - [Annuler une réservation](#annuler-une-réservation)
+    - [S'authentifier](#sauthentifier)
     - [8. Envisager la progression typique des évènements](#8-envisager-la-progression-typique-des-évènements)
     - [9. Envisager les cas d'erreurs](#9-envisager-les-cas-derreurs)
   - [Conception de la base de données relationnelle](#conception-de-la-base-de-données-relationnelle)
@@ -207,6 +209,20 @@ Confirmer une réservation : `PUT /concerts/{id}/reservations`
 
 >Ici, sous la clef `_links` on indique les ressources connexes, notamment les liens pour confirmer ou annuler la réservation. Vous remarquerez que ce sont les mêmes que self, alors pourquoi les mettre ? Pour indiquer à l'agent qui consomme l'API les actions possibles (on appelle ça le [link relation type](https://datatracker.ietf.org/doc/html/rfc5988#section-4), comme le contenu d'une balise a HTML). On n'indique pas la méthode HTTP, car on sait qu'on se conforte à l'interface uniforme (GET, POST, PUT, DELETE). Une requête `OPTIONS` sur la ressource indiquera à l'agent les verbes autorisés. Ici on a GET, POST, PUT et DELETE. GET est reservé pour lister les réservations d'un concert (route protégée), `POST` est utilisé pour effectuer une réservation. Il reste donc PUT et DELETE. DELETE va servir à annuler une reservation. Donc on peut facilement en déduire que PUT va confirmer la réservation. Si on a un doute, on peut toujours tester ! 
 
+#### Ressource *S'authentifier* : `POST /login`
+
+Schéma type :
+
+~~~JSON
+{
+     "_links": {
+       "self": { "href": "/login" },
+       "concerts": { "href": "/concerts/" },
+       "reservations": { "href": "/concerts/{id}/reservations" },
+     },
+     "token": "XXXX.YYYYY.ZZZZZ",
+}
+~~~
 
 ### 6. **Concevoir** la ou les représentations à mettre à disposition des clients
 
@@ -215,6 +231,7 @@ Maintenant, il faut déterminer les représentations que les clients peuvent fab
 - créer une reservation
 - confirmer une reservation
 - annuler une reservation
+- s'authentifier
 
 Le client enverra sa représentation au format `application/x-www-form-urlencoded` (forumlaire), soit de simples clef=valeur dans le corps de la requête HTTP.
 
@@ -248,6 +265,17 @@ DELETE /concerts/1/reservations HTTP/1.1
 pseudo=john
 ~~~
 
+### S'authentifier
+
+>pseudo requête HTTP
+
+~~~HTTP
+POST /login HTTP/1.1
+
+pseudo=ed
+password=password
+~~~
+
 ### 8. Envisager la progression typique des évènements
 
 Scénario nominal (où tout se passe bien)
@@ -270,6 +298,8 @@ Scénario nominal (où tout se passe bien)
 
 
 > Evidemment, nous n'abordons pas ici les points liés à la sécurité, étant donné qu'il n'y a pas de système d'authentification et donc d'autorisations sur le système ! (seulement pour le gestionnaire de site).
+
+> Prévoir ces cas permet notamment de s'assurer de l'idempotence des requête POST qui ne sont ni sûres, ni idempotente.
 
 ## Conception de la base de données relationnelle
 
