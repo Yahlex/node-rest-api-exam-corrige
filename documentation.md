@@ -1,5 +1,26 @@
 # Documentation du projet: choix de conception et d'implémentation
 
+- [Documentation du projet: choix de conception et d'implémentation](#documentation-du-projet-choix-de-conception-et-dimplémentation)
+  - [Conception de l'API](#conception-de-lapi)
+    - [1. Déterminer l'ensemble des données](#1-déterminer-lensemble-des-données)
+    - [2. **Décomposer** l'ensemble de données en ressources](#2-décomposer-lensemble-de-données-en-ressources)
+    - [3. **Nommer** les ressources avec des URI](#3-nommer-les-ressources-avec-des-uri)
+    - [4. **Implémenter** un sous-ensemble de l'interface uniforme (`GET`, `POST`, `DELETE`, `PUT`) pour chaque ressource](#4-implémenter-un-sous-ensemble-de-linterface-uniforme-get-post-delete-put-pour-chaque-ressource)
+    - [5. **Étudier** la ou les représentations acceptées par les clients](#5-étudier-la-ou-les-représentations-acceptées-par-les-clients)
+      - [Ressource *Les concerts à venir* `/concerts` :](#ressource-les-concerts-à-venir-concerts-)
+      - [Ressource *Informations sur un concert* `/concerts/{id}`](#ressource-informations-sur-un-concert-concertsid)
+      - [Ressource *Réservation d'une place de concert* `/concerts/{id}/reservations`](#ressource-réservation-dune-place-de-concert-concertsidreservations)
+    - [6. **Concevoir** la ou les représentations à mettre à disposition des clients](#6-concevoir-la-ou-les-représentations-à-mettre-à-disposition-des-clients)
+      - [Faire une réservation](#faire-une-réservation)
+      - [Confirmer une réservation](#confirmer-une-réservation)
+      - [Annuler une réservation](#annuler-une-réservation)
+    - [8. Envisager la progression typique des évènements](#8-envisager-la-progression-typique-des-évènements)
+    - [9. Envisager les cas d'erreurs](#9-envisager-les-cas-derreurs)
+  - [Conception de la base de données relationnelle](#conception-de-la-base-de-données-relationnelle)
+    - [Dictionnaire des données](#dictionnaire-des-données)
+    - [Conception de la base de données: du MCD au MPD](#conception-de-la-base-de-données-du-mcd-au-mpd)
+
+
 ## Conception de l'API
 
 Nous reprenons la démarche générale, proposée par [Leonard Richardson](https://www.oreilly.com/pub/au/2556) et [Sam Ruby](https://en.wikipedia.org/wiki/Sam_Ruby)
