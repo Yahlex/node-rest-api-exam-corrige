@@ -113,8 +113,6 @@ router.put('/concerts/:id/reservation', function (req, res, next) {
         "_links": [{
           "self": hal.halLinkObject("/concerts/1/reservations", 'string'),
           "concert": hal.halLinkObject("/concerts/1", 'string'),
-          "confirmer": hal.halLinkObject("/concerts/1/reservations", 'string'),
-          "annuler": hal.halLinkObject("/concerts/1/reservations", 'string'),
         }],
         "dateReservation": dateReservation,
         "pseudo": userId,
