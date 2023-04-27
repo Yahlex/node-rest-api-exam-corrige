@@ -157,7 +157,7 @@ docker-compose up -d
 
 ## Remarques
 
-- Actuellement le projet utilise la libraire [mysql](https://github.com/mysqljs/mysql) node.js. Cette libraire est bien mais assez limitée, notamment elle nous force à se retrouver dans un *callback hell* car elle n'utilise pas le mécanisme des promesses. Il pourrait être intéressant soit de passer à [mysql2](https://www.npmjs.com/package/mysql2) (évolution de muysql, avec une gestion des exceptions et de meilleures performences), soit d'utiliser l'ORM [sequlezise](https://sequelize.org/) (bonus 2 de l'examen)
+- Actuellement le projet utilise la libraire [mysql](https://github.com/mysqljs/mysql) node.js. Cette libraire est bien mais elle nous force à se retrouver dans un *callback hell*, car elle n'utilise pas l'[API des Promesses](https://developer.mozilla.org/fr/docs/Web/JavaScript/Guide/Using_promises). Il pourrait être intéressant soit de passer à [mysql2](https://www.npmjs.com/package/mysql2) (évolution du driver mysql, avec une gestion des promesses et de meilleures performances), soit d'utiliser l'ORM [sequlezise](https://sequelize.org/) (bonus 2 de l'examen)
 
 ## Arrêter le projet
 
