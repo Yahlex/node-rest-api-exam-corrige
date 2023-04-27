@@ -11,6 +11,7 @@ L'implémentation (avec node.js/Express/MySQL) du sujet d'examen du module API *
     - [Client graphique Adminer pour la base de données MySQL](#client-graphique-adminer-pour-la-base-de-données-mysql)
     - [Créer la base de données test](#créer-la-base-de-données-test)
   - [Tester l'installation](#tester-linstallation)
+  - [Tester l'API](#tester-lapi)
   - [Documentation de l'API avec Swagger](#documentation-de-lapi-avec-swagger)
   - [Installer et servir de nouvelles dépendances](#installer-et-servir-de-nouvelles-dépendances)
   - [Remarques](#remarques)
@@ -115,11 +116,25 @@ Ou utiliser Adminer.
 
 ## Tester l'installation
 
-Se rendre à l'URL [localhost:5001/users](http://localhost:5001), ou tester (avec [curl](https://curl.se/))
+Se rendre à l'URL [localhost:5001/concerts](http://localhost:5001), ou tester (avec [curl](https://curl.se/))
 
 ~~~
 # API (JSON) : lister les utilisateur·ices
-curl --include localhost:5001/users
+curl --include localhost:5001/concerts
+~~~
+
+## Tester l'API
+
+Se rendre à l'URL /doc pour accéder à la documentation de l'API générée avec Swagger ou utiliser directement curl
+
+~~~
+curl -X <verbe HTTP> -i <URI> -d <forumaire>
+~~~
+
+Par exemple, pour effectuer une réservation
+
+~~~
+curl -X POST -i localhost:5001/concerts/1/reservation -d 'pseudo=jenny'
 ~~~
 
 ## Documentation de l'API avec Swagger
