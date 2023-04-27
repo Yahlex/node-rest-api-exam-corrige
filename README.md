@@ -113,7 +113,7 @@ Ou utiliser Adminer.
 
 ## Tester l'installation
 
-Se rendre à l'URL [localhost:5001](http://localhost:5001), ou tester (avec [curl](https://curl.se/))
+Se rendre à l'URL [localhost:5001/users](http://localhost:5001), ou tester (avec [curl](https://curl.se/))
 
 ~~~
 # API (JSON) : lister les utilisateur·ices
