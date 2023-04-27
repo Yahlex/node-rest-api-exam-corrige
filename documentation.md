@@ -318,7 +318,7 @@ Voici un schéma UML du modèle conceptuel des données :
 
 Voici un schéma UML du modèle relationnel (traduction du modèle conceptuel (objet) dans le modèle relationnel) :
 
+<img src="./diagramme-uml-ModeleRelationnel.png" width="600px" alt ="Diagramme UML du Modèle Relationnel des données">
 
-
-De ce travail nous en déduisons le niveau physique, et [le script SQL (pour MySQL ici)](./scripts-sql/schema.sql).
+De ce travail, nous en déduisons le niveau physique, et [le script SQL (pour MySQL ici)](./scripts-sql/schema.sql).
 
