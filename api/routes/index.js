@@ -10,7 +10,7 @@ router.get('/concerts', function (req, res, next) {
   // #swagger.summary = "Les concerts à venir"
 
   //Liste des concerts avec le nombre de reservations non annulées en cours
-  connection.query("SELECT id, lieu, artiste, date_debut, nb_places, COUNT(*) as nb_reservations FROM Concert c INNER JOIN Reservation r ON c.id=r.id_concert WHERE r.statut != 'annule' GROUP BY (c.id)", (error, rows, fields) => {
+  connection.query("SELECT id, lieu, artiste, date_debut, nb_places, COUNT(*) as nb_reservations FROM Concert c LEFT JOIN Reservation r ON c.id=r.id_concert WHERE (r.statut != 'annule' OR r.statut IS NULL) GROUP BY (c.id)", (error, rows, fields) => {
     if (error) {
       console.error('Error connecting: ' + error.stack);
       res.status(500).json({ "msg": "Nous rencontrons des difficultés, merci de rééssayer plus tard." });
@@ -139,7 +139,7 @@ router.delete('/concerts/:id/reservation', function (req, res, next) {
 
     //Verifier que la reservation exite avec le statut 'a_confirmer'
 
-    //Lister toutes les reservations en cours non annulées pour ce concert. S'il y'en a, rejeter la demande
+    //Lister toutes les reservations en cours non annulées pour ce concert. S'il y'en a pas, rejeter la demande
     connection.query("SELECT * FROM Utilisateur u INNER JOIN Reservation r ON u.id=r.id_utilisateur WHERE id_concert= ? AND r.statut = 'a_confirme' AND u.pseudo= ?", [req.params.id, req.body.pseudo], (error, rows, fields) => {
 
       if (error) {
@@ -222,6 +222,9 @@ router.post('/concerts/:id/reservation', function (req, res, next) {
         res.status(500).json({ "msg": "Vous avez déjà effectué une réservation pour ce concert." });
         return
       }
+
+      //Vérifier qu'il reste des places disponibles
+      //...
 
       //Créer la réservation avec status 'a_confirmer',
       connection.query("INSERT INTO Reservation (id_concert, id_utilisateur, statut) VALUES (?, ?, 'a_confirme');", [req.params.id, userId], (error, rows, fields) => {
