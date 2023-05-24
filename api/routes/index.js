@@ -16,8 +16,6 @@ router.get('/concerts', function (req, res, next) {
       res.status(500).json({ "msg": "Nous rencontrons des difficultés, merci de rééssayer plus tard." });
     }
 
-    //Calculer le nombre de places disponibles: nb places - nb reservation non annulées
-
     //Fabriquer Ressource Object Concerts en respectant la spec HAL
     const concertsResourceObject = {
       "_embedded": {
@@ -206,48 +204,62 @@ router.post('/concerts/:id/reservation', function (req, res, next) {
 
     const userId = (rows[0]).id
 
-    //Verifier que la reservation avec le statut 'a_confirmer' ou 'confirme' n'existe pas encore
-
-    //Lister toutes les reservations en cours non annulées pour ce concert. S'il y'en a, rejeter la demande
-    connection.query("SELECT * FROM Utilisateur u INNER JOIN Reservation r ON u.id=r.id_utilisateur WHERE id_concert= ? AND (r.statut = 'a_confirme' OR r.statut = 'confirme') AND u.pseudo= ?", [req.params.id, req.body.pseudo], (error, rows, fields) => {
+    //Vérifier qu'il reste des places disponibles
+    connection.query("SELECT c.nb_places - COUNT(*) as 'nb_places_disponibles' FROM Concert c INNER JOIN Reservation r ON r.id_concert=c.id WHERE r.statut != 'annule' AND c.id=? GROUP BY c.id;", [req.params.id], (error, rows, fields) => {
 
       if (error) {
-        console.error('Error connecting: ' + err.stack);
+        console.error('Error connecting: ' + error.stack);
         res.status(500).json({ "msg": "Nous rencontrons des difficultés, merci de rééssayer plus tard." });
         return
       }
 
-      if (rows.length !== 0) {
-        //On pourrait rappeler ici les détails de la réservation (lien vers le concert, date de reservation)
-        res.status(500).json({ "msg": "Vous avez déjà effectué une réservation pour ce concert." });
+      const availableSeats = (rows[0]).nb_places_disponibles
+
+      if (availableSeats === 0) {
+        res.status(400).json({ "msg": "Nous sommes désolés, le concert est déjà complet." });
         return
       }
 
-      //Vérifier qu'il reste des places disponibles
-      //...
+      //Verifier que la reservation avec le statut 'a_confirmer' ou 'confirme' n'existe pas encore
 
-      //Créer la réservation avec status 'a_confirmer',
-      connection.query("INSERT INTO Reservation (id_concert, id_utilisateur, statut) VALUES (?, ?, 'a_confirme');", [req.params.id, userId], (error, rows, fields) => {
+      //Lister toutes les reservations en cours non annulées pour ce concert. S'il y'en a, rejeter la demande
+      connection.query("SELECT * FROM Utilisateur u INNER JOIN Reservation r ON u.id=r.id_utilisateur WHERE id_concert= ? AND (r.statut = 'a_confirme' OR r.statut = 'confirme') AND u.pseudo= ?", [req.params.id, req.body.pseudo], (error, rows, fields) => {
 
         if (error) {
           console.error('Error connecting: ' + err.stack);
-          res.status(500).json({ "msg": "Malheureusement, nous n'avons pas pu effectuer votre réservation. Merci de rééssayer plus tard." });
+          res.status(500).json({ "msg": "Nous rencontrons des difficultés, merci de rééssayer plus tard." });
           return
         }
 
-        res.set('Content-Type', 'application/hal+json');
-        res.status(201);
-        res.json({
-          "_links": [{
-            "self": hal.halLinkObject("/concerts/1/reservations", 'string'),
-            "concert": hal.halLinkObject("/concerts/1", 'string'),
-            "confirmer": hal.halLinkObject("/concerts/1/reservations", 'string'),
-            "annuler": hal.halLinkObject("/concerts/1/reservations", 'string'),
-          }],
-          "dateReservation": new Date(),
-          "pseudo": req.body.pseudo,
-          "status": "a_confirmer",
-        });
+        if (rows.length !== 0) {
+          //On pourrait rappeler ici les détails de la réservation (lien vers le concert, date de reservation)
+          res.status(400).json({ "msg": "Vous avez déjà effectué une réservation pour ce concert." });
+          return
+        }
+
+        //Créer la réservation avec status 'a_confirmer',
+        connection.query("INSERT INTO Reservation (id_concert, id_utilisateur, statut) VALUES (?, ?, 'a_confirme');", [req.params.id, userId], (error, rows, fields) => {
+
+          if (error) {
+            console.error('Error connecting: ' + err.stack);
+            res.status(500).json({ "msg": "Malheureusement, nous n'avons pas pu effectuer votre réservation. Merci de rééssayer plus tard." });
+            return
+          }
+
+          res.set('Content-Type', 'application/hal+json');
+          res.status(201);
+          res.json({
+            "_links": [{
+              "self": hal.halLinkObject("/concerts/1/reservations", 'string'),
+              "concert": hal.halLinkObject("/concerts/1", 'string'),
+              "confirmer": hal.halLinkObject("/concerts/1/reservations", 'string'),
+              "annuler": hal.halLinkObject("/concerts/1/reservations", 'string'),
+            }],
+            "dateReservation": new Date(),
+            "pseudo": req.body.pseudo,
+            "status": "a_confirmer",
+          });
+        })
       })
     })
   }) //<---- Bienvenue dans le callback hell !
