@@ -26,7 +26,13 @@ VALUES
         '2024-01-17 19:00:00',
         'Nantes, Stéréolux',
         'Lore ipsum'
-    );
+    ) (
+        'Foo Bar',
+        2,
+        '2024-01-23 21:00:00',
+        'Rennes, dans une toute petite pièce',
+        'Lore ipsum'
+    ),
 
 -- Utilisateurs et gestionnaire de site 'ed'
 INSERT INTO
