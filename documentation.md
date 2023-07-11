@@ -137,7 +137,7 @@ Schéma type
 {
      "_links": {
        "self": { "href": "/concerts/1" },
-       "reservation" : {"href" : "/concerts/1/reservation"}
+       "reservation" : {"href" : "/concerts/1/reservations"}
      },
     "id": 1,
     "date": '2023-02-17 21:00:00',
