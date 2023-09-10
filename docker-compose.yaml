@@ -10,26 +10,26 @@ services:
     volumes:
       - ./api:/usr/src/app:rw
     container_name: ${PROJECT_NAME}-api
-    command: "nodemon ./bin/www"
     ports:
       - ${HOST_PORT_API}:3000
-      
+    command: "nodemon ./bin/www"
+    depends_on:
+      - db  
   # La base de données relationnelle (ici SGBD MySQL)
   db:
     image: mysql:5.7
     restart: always
     environment:
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=mydb
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=password
+      - MYSQL_ROOT_PASSWORD=root
     volumes:
-      - ./db:/var/lib/mysql
+      - ./init/:/docker-entrypoint-initdb.d/
     ports:
       - ${HOST_PORT_DB}:3306
-    container_name: ${PROJECT_NAME}-mysql
+    container_name: ${PROJECT_NAME}-db
 
-  # Un client graphique pour la base de données MySQL
   adminer:
     image: adminer
     restart: always

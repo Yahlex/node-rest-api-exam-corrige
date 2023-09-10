@@ -7,7 +7,7 @@ _-statut: Statut &lt;PK&gt;_
 -
 CONSTRAINT ENUM statut('confirme','a_confirme','annule')
 CONSTRAINT CHECK 
-ck_date_reservation (date_reservation &lt; date_debut)</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>110</x><y>180</y><w>220</w><h>160</h></coordinates><panel_attributes>Concert
+ck_date_reservation (date_reservation &lt; date_debut)</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>110</x><y>180</y><w>290</w><h>160</h></coordinates><panel_attributes>Concert
 --
 _- id: INTEGER &lt;PRIMARY KEY&gt;_
 -artiste: VARCHAR(120)
@@ -16,7 +16,7 @@ _- id: INTEGER &lt;PRIMARY KEY&gt;_
 -nb_places : TINYINT
 -description: TEXT
 --
-CONSTRAINT CHECK ck_nbplaces &gt; 0
+CONSTRAINT CHECK ck_nbplaces (nb_places &gt; 0)
 </panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>500</x><y>180</y><w>290</w><h>120</h></coordinates><panel_attributes>Utilisateur
 --
 _ id : INTEGER &lt;PRIMARY KEY&gt;_

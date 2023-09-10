@@ -71,6 +71,15 @@ cp .env.dist .env
 
 > Vous pouvez modifier les variables d'environnement si vous le souhaitez (des valeurs par défaut sont fournies)
 
+Installer les dépendances de l'application node et générer la doc swagger
+
+~~~
+pushd api
+npm install
+npm run swagger-autogen
+popd
+~~~
+
 Démarrer le projet
 
 ~~~
@@ -116,6 +125,9 @@ mysql -uroot -proot -h127.0.0.1 -P5002 < scripts-sql/dataset.sql
 Ou utiliser Adminer.
 
 ## Tester l'installation
+
+**Il se peut que le serveur MySQl mette un peu de temps à démarrer, résultant en une erreur (`ECONNREFUSED`) de la tentative de connexion de l'application node qui est déjà active. Il suffit de sauvegarder un fichier source js (par exemple `app.js`) pour réinitialiser l'état de l'application et de la connexion à MySQL**
+
 
 Se rendre à l'URL [localhost:5001/concerts](http://localhost:5001), ou tester (avec [curl](https://curl.se/))
 
