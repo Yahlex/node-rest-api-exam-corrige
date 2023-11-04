@@ -1,6 +1,6 @@
 # Application de réservation de billets de concerts
 
-Suggestion de correction de l'exercice 2 (conception) et l'exercice 4 (implémentation).
+Suggestion de correction de l'exercice 2 (conception) et de l'exercice 4 (implémentation).
 
 Le projet est réalisé en partant du [starterpack (Node.js, MySQL, Adminer)](https://github.com/paul-schuhm/starterpack-api-nodejs).
 
