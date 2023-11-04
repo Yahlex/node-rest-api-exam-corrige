@@ -1,0 +1,171 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "web API RESTful",
+    "description": "Starter pack",
+    "version": "1.0.0"
+  },
+  "host": "localhost:5001",
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/concerts": {
+      "get": {
+        "summary": "La liste des concerts à venir",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/concerts/{id}": {
+      "get": {
+        "summary": "Détail d'un concert",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/concerts/{id}/reservations": {
+      "put": {
+        "summary": "Confirmer une réservation à une place de concert",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "pseudo",
+            "in": "formData",
+            "description": "Le pseudo de l'utilisateur qui confirme sa réservation",
+            "required": true,
+            "type": "string",
+            "format": "application/x-www-form-urlencoded"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": false
+        }
+      },
+      "delete": {
+        "summary": "Annuler une réservation à une place de concert",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "pseudo",
+            "in": "formData",
+            "description": "Le pseudo de l'utilisateur qui annule sa réservation",
+            "required": true,
+            "type": "string",
+            "format": "application/x-www-form-urlencoded"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": false
+        }
+      },
+      "post": {
+        "summary": "Réserver une place de concert",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "pseudo",
+            "in": "formData",
+            "description": "Le pseudo de l'utilisateur qui effectue la réservation",
+            "required": true,
+            "type": "string",
+            "format": "application/x-www-form-urlencoded"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": false
+        }
+      }
+    }
+  }
+}
