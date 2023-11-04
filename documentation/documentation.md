@@ -24,6 +24,8 @@
     - [Utilisateurs MySQL](#utilisateurs-mysql)
     - [Liste des requêtes SQL](#liste-des-requêtes-sql)
   - [Requêtes HTTP avec cURL (tests de l'API)](#requêtes-http-avec-curl-tests-de-lapi)
+    - [Progression typique des évènements pour un client de l'API](#progression-typique-des-évènements-pour-un-client-de-lapi)
+    - [Partie authentification pour le gestionnaire de site](#partie-authentification-pour-le-gestionnaire-de-site)
 
 
 ## Conception de l'API
@@ -398,7 +400,7 @@ mysql -uroot -p -h127.0.0.1 -P5002 < documentation/scripts-sql/schema.sql
 Insérer le jeu de données test
 
 ~~~bash
-mysql -uroot -p -h127.0.0.1 -P5002 < documentation/scripts-sql/schema.sql
+mysql -uroot -p -h127.0.0.1 -P5002 < documentation/scripts-sql/dataset.sql
 ~~~
 
 ### Utilisateurs MySQL
@@ -447,7 +449,7 @@ FROM Concert c WHERE c.id_concert = ?
 
 ## Requêtes HTTP avec cURL (tests de l'API)
 
-Voici la progression typique des évènements pour un client de l'API :
+### Progression typique des évènements pour un client de l'API
 
 ~~~bash
 # Variable bash pour stocker le nom de domaine (a adapter à vos besoins)
@@ -466,7 +468,15 @@ curl -X PUT -d "pseudo=john" $baseURL/concerts/3/reservation
 curl -X DELETE -d "pseudo=john" $baseURL/concerts/3/reservation
 ~~~
 
-Partie authentification pour le gestionnaire de site :
+### Partie authentification pour le gestionnaire de site
+
+Modifier le schéma pour ajouter la colonne `password` à la table `User` :
+
+~~~bash
+mysql -uroot -p -h127.0.0.1 -P5002 < documentation/scripts-sql/addpassword.sql
+~~~
+
+Enfin, effectuer les requêtes HTTP suivantes :
 
 ~~~bash
 # S'authentifier et récupérer un token (a effectuer sur une connexion sécurisée par TLS, site en https)
