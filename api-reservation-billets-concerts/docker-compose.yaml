@@ -26,6 +26,7 @@ services:
       - MYSQL_ROOT_PASSWORD=root
     volumes:
       - ./init/:/docker-entrypoint-initdb.d/
+      - ./dbdata:/var/lib/mysql
     ports:
       - ${HOST_PORT_DB}:3306
     container_name: ${PROJECT_NAME}-db
@@ -38,3 +39,4 @@ services:
     container_name: ${PROJECT_NAME}-adminer
     ports:
       - ${HOST_PORT_ADMINER}:8080
+
