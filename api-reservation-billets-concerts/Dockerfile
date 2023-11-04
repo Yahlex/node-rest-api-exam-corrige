@@ -4,6 +4,4 @@ WORKDIR /usr/src/app
 
 COPY api/ .
 
-RUN npm install -g nodemon
-
 EXPOSE 3000

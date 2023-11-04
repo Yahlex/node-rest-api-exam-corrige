@@ -3,31 +3,55 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var indexRouter = require('./routes/index');
-var authRouter = require('./routes/authentification');
-var swaggerUi = require('swagger-ui-express')
-var swaggerFile = require('./swagger_output.json')
-var bodyParser = require('body-parser');
+const swaggerUi = require('swagger-ui-express')
+const swaggerFile = require('./swagger_output.json')
+var hal = require('./hal')
+
+/**
+ * Import des modules de routing
+ */
+var concertsRouter = require('./routes/concerts');
+var reservationsRouter = require('./routes/reservations');
+var authentification = require('./routes/authentification');
 
 var app = express();
 
-// view engine setup (on s'en sert pas, on fait pas du web 'humain')
+// view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+/**
+ * Enregistrement des routes
+ */
 
 /**
- * Enregisterment des routes
+ * Home (point d'entrée)
  */
-app.use('/', indexRouter);
-app.use('/', authRouter);
+app.get('/', function (req, res, next) {
+  res.send({
+    "_links": {
+      "self": hal.halLinkObject('/'),
+      "concerts": hal.halLinkObject('/concerts')
+    },
+    'description' : 'A RESTful concerts ticketing system'
+  })
+});
+
+
+/**
+ * Enregistrement des routeurs
+ */
+
+app.use('/', concertsRouter);
+app.use('/', reservationsRouter);
+app.use('/', authentification.router);
+
 
 /**
  * Configuration Swagger, exposition de la doc sur la route /doc

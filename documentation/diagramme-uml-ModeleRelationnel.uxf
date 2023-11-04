@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="15.1">
+  <help_text>Space for diagram notes</help_text>
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>390</x>
+      <y>500</y>
+      <w>380</w>
+      <h>150</h>
+    </coordinates>
+    <panel_attributes>Reservation
+--
+_- id_concert: INTEGER &lt;FOREIGN KEY&gt; &lt;PK&gt;_
+_- id_user: CHAR(12) &lt;FOREIGN KEY&gt; &lt;PK&gt;_
+_- statut: Enum &lt;PK&gt;_
+-date_booking: DATETIME
+-
+CONSTRAINT ENUM statut('confirme','a_confirme','annule')
+CONSTRAINT CHECK 
+ck_date_reservation (date_reservation &lt; date_debut)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>360</x>
+      <y>190</y>
+      <w>420</w>
+      <h>200</h>
+    </coordinates>
+    <panel_attributes>Concert
+--
+_- id: INTEGER &lt;PRIMARY KEY&gt;_
+-artist: VARCHAR(120)
+-date_start: DATETIME
+-location: VARCHAR(120)
+-nb_seats : TINYINT
+-description: TEXT
+- music_style: Enum
+--
+CONSTRAINT ENUM music_style('Rap','Rock','Pop')
+CONSTRAINT CHECK ck_nbseats (nb_seats &gt; 0)
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>890</x>
+      <y>270</y>
+      <w>280</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>User
+--
+_ pseudo : CHAR(12) &lt;PRIMARY KEY&gt;_
+-is_admin: Bool
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>260</x>
+      <y>210</y>
+      <w>230</w>
+      <h>340</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+fk_reservation_is_for_concert</panel_attributes>
+    <additional_attributes>100.0;10.0;10.0;10.0;10.0;320.0;130.0;320.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>680</x>
+      <y>290</y>
+      <w>370</w>
+      <h>280</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+fk_reservation_is_made_by_user</panel_attributes>
+    <additional_attributes>210.0;10.0;130.0;10.0;130.0;260.0;10.0;260.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>180</x>
+      <y>90</y>
+      <w>340</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>On aurait pu ici ajouter une relation
+MusicSyle pour modéliser l'énumération
+et rendre plus facilement administrable
+ l'ajout de styles de musique (simplification)
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

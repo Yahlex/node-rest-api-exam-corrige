@@ -1,33 +1,30 @@
-# Corrigé de l'examen *API RESTful*
+# Application de réservation de billets de concerts
 
-L'implémentation (avec node.js/Express/MySQL) du sujet d'examen du module API *RESTful*.
+Suggestion de correction de l'exercice 2 (conception) et l'exercice 4 (implémentation).
 
-- [Corrigé de l'examen *API RESTful*](#corrigé-de-lexamen-api-restful)
-  - [Sujet (Spécifications du système)](#sujet-spécifications-du-système)
-  - [Documentation sur la conception et les choix d'implémentation](#documentation-sur-la-conception-et-les-choix-dimplémentation)
-  - [Prérequis](#prérequis)
-  - [Lancer le projet avec Compose](#lancer-le-projet-avec-compose)
-  - [Base de données](#base-de-données)
-    - [Client graphique Adminer pour la base de données MySQL](#client-graphique-adminer-pour-la-base-de-données-mysql)
-    - [Créer la base de données test](#créer-la-base-de-données-test)
-  - [Tester l'installation](#tester-linstallation)
-  - [Tester l'API](#tester-lapi)
-  - [Documentation de l'API avec Swagger](#documentation-de-lapi-avec-swagger)
-  - [Installer et servir de nouvelles dépendances](#installer-et-servir-de-nouvelles-dépendances)
+Le projet est réalisé en partant du [starterpack (Node.js, MySQL, Adminer)](https://github.com/paul-schuhm/starterpack-api-nodejs).
+
+- [Application de réservation de billets de concerts](#application-de-réservation-de-billets-de-concerts)
+  - [Énoncé](#énoncé)
+    - [Conception](#conception)
+    - [Implémentation](#implémentation)
+  - [Documentation](#documentation)
+  - [Lancer le projet](#lancer-le-projet)
+  - [Générer la documentation de l'API avec swagger-autgoen](#générer-la-documentation-de-lapi-avec-swagger-autgoen)
   - [Remarques](#remarques)
   - [Arrêter le projet](#arrêter-le-projet)
-  - [Déboguer](#déboguer)
-  - [Librairies JS notables installées via npm](#librairies-js-notables-installées-via-npm)
+  - [Dépendances notables du projets](#dépendances-notables-du-projets)
   - [Autorisations gérées avec JWT](#autorisations-gérées-avec-jwt)
   - [Ressources](#ressources)
     - [HTTP](#http)
-    - [Docker](#docker)
     - [Express](#express)
     - [Swagger](#swagger)
     - [SGBDR](#sgbdr)
 
 
-## Sujet (Spécifications du système)
+## Énoncé
+
+### Conception
 
 On désire mettre en ligne un service de réservation de billets de concert. Le service ne gère pas de base de données des utilisateurs : un·e utilisateur·ice est simplement identifié·e par un pseudo au moment de la réservation.
 
@@ -42,151 +39,62 @@ Les cas d'utilisation définis sont :
 
 Attention, **un utilisateur qui a confirmé sa réservation ne peut plus l'annuler !**
 
-> Le sujet original est consultable sur le site de [David Gayerie](https://gayerie.dev/epsi-poe-201703/web-services/07_rest.html#contraintes_rest)
+**Décrire** une API Web RESTful **par des exemples de requêtes/réponses HTTP** permettant de réaliser les cas d'utilisation ci-dessus.
 
-## Documentation sur la conception et les choix d'implémentation
+1. Déterminer l'ensemble de données
+2. Décomposer l'ensemble de données en ressources
+3. Pour chaque ressource :
+  1. La nommer avec des URI et préciser l'*archétype* de la ressource
+  2. Implémenter un sous-ensemble de l'interface uniforme (GET, POST, DELETE, PUT)
+  3. Concevoir la ou les représentations acceptées par les clients, en utilisant la spécification HAL.
+  4. Concevoir la ou les représentations à mettre à disposition des clients (*formulaires*) sous la forme de pseudo requêtes HTTP de la forme
+~~~bash
+METHODE /login HTTP/1.1
 
-[Accéder à la documentation du projet.](./documentation.md)
-
-## Prérequis
-
-- Installer [node.js](https://nodejs.org/en)
-- Installer [Docker](https://www.docker.com/get-started/) et [Compose](https://docs.docker.com/compose/)
-- Clôner le dépôt et se placer à la racine du projet
-
->N'oubliez pas de supprimer le dossier `.git` si vous désirez créer votre propre dépôt à partir des sources
-
+clef=valeur
+clef2=valeur2
 ~~~
-rm -R .git
-git init
-~~~
+4. Envisager la progression typique des évènements: qu'est-ce qui est censé se produire ? Définir les code retours pour chaque requête HTTP
+5. Considérer les cas d'erreurs: qu'est-ce qui peut mal se passer ? 
 
-## Lancer le projet avec Compose
+### Implémentation
 
-Créer un fichier d'environnement `.env` local à partir du fichier `.env.dist`
+1. **Implémenter** [l'API de l'exercice 2](#exercice-2---design-dune-api-restful) avec node.js et Express.js. **Concevoir** le schéma de base de données et implémenter la base relationnelle.
+2. *Bonus* : **Développer** un ensemble de *ressources* pour qu'un agent *humain* puisse réaliser les cas d'utilisation exposés par l'API (via des pages web)
 
-~~~
-cp .env.dist .env
-~~~
+## Documentation
 
-> Vous pouvez modifier les variables d'environnement si vous le souhaitez (des valeurs par défaut sont fournies)
+[Accéder à la documentation du projet](./documentation/documentation.md).
 
-Installer les dépendances de l'application node et générer la doc swagger
+## Lancer le projet
 
-~~~
-pushd api
-npm install
-npm run swagger-autogen
-popd
-~~~
-
-Démarrer le projet
-
-~~~
+~~~bash
+cd api-reservation-billets-concerts
 docker-compose up -d
+curl localhost:5001 #test
 ~~~
 
-## Base de données
+Avec Adminer ou `mysql` exécuter les [scripts SQL préparés](./documentation/scripts-sql/) :
 
-L'`host` de la base de données est le nom du service sur le réseau du projet crée par Docker, soit `db`.
-
-Se connecter avec le client mysql
-
-~~~
-mysql -uroot -proot -Dmydb -h127.0.0.1 -P5002
-~~~
-
-Pour exécuter un script SQL en *Batch mode*
-
-~~~
-mysql -uroot -proot -Dmydb -h127.0.0.1 -P5002 < script.sql
-~~~
-
->Penser à modifier la valeur du port si vous l'avez changé dans le `.env`
-
-### Client graphique Adminer pour la base de données MySQL
-
-Se rendre à l'url [http://localhost:5003](http://localhost:5003) et se connecter avec les credentials *root* (login *root* et mot de passe *root* par défaut)
-
-### Créer la base de données test
-
-Se placer à la racine du projet. Créer le schéma de la base de données en *batch mode* :
-
-~~~
-mysql -uroot -proot -h127.0.0.1 -P5002 < scripts-sql/schema.sql
-~~~
-
-Insérer le jeu de données test :
-
-~~~
-mysql -uroot -proot -h127.0.0.1 -P5002 < scripts-sql/dataset.sql
-~~~
-
-Ou utiliser Adminer.
-
-## Tester l'installation
-
-**Il se peut que le serveur MySQl mette un peu de temps à démarrer, résultant en une erreur (`ECONNREFUSED`) de la tentative de connexion de l'application node qui est déjà active. Il suffit de sauvegarder un fichier source js (par exemple `app.js`) pour réinitialiser l'état de l'application et de la connexion à MySQL**
+- [schema.sql](./documentation/scripts-sql/schema.sql) pour créer le schéma de la base
+- [dataset](./documentation/scripts-sql/dataset.sql) pour insérer un jeu de données test
 
 
-Se rendre à l'URL [localhost:5001/concerts](http://localhost:5001), ou tester (avec [curl](https://curl.se/))
+## Générer la documentation de l'API avec swagger-autgoen
 
-~~~
-# API (JSON) : lister les utilisateur·ices
-curl --include localhost:5001/concerts
-~~~
+Pour générer la documentation à partir des blocs commentaires swagger placé dans le code
 
-## Tester l'API
-
-Se rendre à l'URL /doc pour accéder à la documentation de l'API générée avec Swagger ou utiliser directement curl
-
-~~~
-curl -X <verbe HTTP> -i <URI> -d <formulaire>
-~~~
-
-Par exemple, pour effectuer une réservation
-
-~~~
-curl -X POST -i localhost:5001/concerts/1/reservation -d 'pseudo=jenny'
-~~~
-
-## Documentation de l'API avec Swagger
-
-Générer automatiquement la documentation de vos routes avec le module Swagger. Dans le dossier `api` : 
-
-~~~
-node swagger.js
-~~~
-
-ou
-
-~~~
-npm run swagger-autogen
-~~~
-
-Se rendre à l'URL `/doc` pour accéder à l'UI de Swagger
-
-## Installer et servir de nouvelles dépendances
-
-- Stopper les containers avec Compose
-- À la racine de l'application (`api/`), *installer* les dépendances désirées via `npm`
-- Reconstruire le conteneur `api`
-- Relancer les containers avec Compose
-
-~~~
-docker-compose down
+~~~bash
 pushd api
-#Installer les dépendances
-npm install --save votre-dependance
-popd
-docker-compose build api
-docker-compose up -d
+npm run swagger-autogen
+popd api
 ~~~
+
 
 ## Remarques
 
-- Actuellement le projet utilise la libraire [mysql](https://github.com/mysqljs/mysql) node.js. Cette libraire est bien mais elle nous force à se retrouver dans un *callback hell*, car elle n'utilise pas l'[API des Promesses](https://developer.mozilla.org/fr/docs/Web/JavaScript/Guide/Using_promises). Il pourrait être intéressant soit de passer à [mysql2](https://www.npmjs.com/package/mysql2) (évolution du driver mysql, avec une gestion des promesses et de meilleures performances), soit d'utiliser l'ORM [sequlezise](https://sequelize.org/) (bonus 2 de l'examen)
-- La correction se concentre sur la conception de l'API et sur son interface (représentations échangées et respect des contraintes REST). Il y a beaucoup à faire concernant le code applicatif (factorisation, élimination des callbacks hell, création de nombreuses fonctions, etc.) Cette tâche est laissée en exercice.
+- Actuellement le projet utilise la libraire [mysql2](https://github.com/mysqljs/mysql2) node.js. Il pourrait être intéressant  d'utiliser l'ORM [sequlezise](https://sequelize.org/)
+- La correction se concentre sur la conception de l'API et sur son interface (représentations échangées et respect des contraintes REST). Il y a beaucoup à faire concernant le code applicatif (factorisation, création de nombreuses fonctions, etc.) Cette tâche est laissée en exercice.
 - Vous l'aurez compris, *cette solution (et les specs !) ne se concentre pas sur les aspects de sécurité* pour des raisons pédagogiques. Par exemple, *il ne faut jamais stocker les mots de passe en clair en base de données* ! De nombreux points d'amélioration sont laissés en guise d'exercice. 
 
 ## Arrêter le projet
@@ -195,25 +103,16 @@ docker-compose up -d
 docker-compose down
 ~~~
 
-## Déboguer
+## Dépendances notables du projets
 
-Pour débuger votre API, ne pas hésiter à *consulter les logs* de votre conteneur docker qui héberge l'application node.js :
+En dehors d'express, le projet utilise les modules suivants :
 
-~~~
-docker logs -f billeterie-api
-~~~
-
-[Voir la documentation officielle de Docker](https://docs.docker.com/engine/reference/commandline/logs/) pour consulter plus d'options sur les logs.
-
-## Librairies JS notables installées via npm
-
-- [bodyParser](https://www.npmjs.com/package/body-parser), un parser du corps de requête pour les applications node. On s'en sert pour parser les représentations envoyées par le client dans nos contrôleurs avec l'instruction `app.use(bodyParser.urlencoded({ extended: true }));`
+- [body-parser](https://www.npmjs.com/package/body-parser), un parser du corps de requête pour les applications node. On s'en sert pour parser les représentations envoyées par le client dans nos contrôleurs avec l'instruction `app.use(bodyParser.urlencoded({ extended: true }));`
 - [jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken), une implémentation JavaScript du standard JSON Web Token, voir [RFC 7519](https://www.rfc-editor.org/rfc/rfc7519)
-- [mysql](https://github.com/mysqljs/mysql), driver node.js pour MySQL
-
+- [mysql2](https://github.com/mysqljs/mysql2), driver node.js pour MySQL
+- [swagger-autogen](https://www.npmjs.com/package/swagger-autogen), module de génération *automatique* de la documentation de l'API dans une application node.js/Express. Voir notamment la documentation pour documenter automatiquement les endpoints (résumé, description, paramètres)
+  
 ## Autorisations gérées avec JWT
-
->JSON Web Token (JWT) is a compact, URL-safe means of *representing claims to be transferred between two parties* (Source: RFC7519)
 
 Pour **autoriser** (et donc authentifier) l'utilisateur à interagir avec les ressources, on utilise un JSON Web Token. Implémentée dans le projet avec le package [jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken).
 
@@ -223,29 +122,22 @@ Pour **autoriser** (et donc authentifier) l'utilisateur à interagir avec les re
 
 - [La liste des codes statut HTTP (MDN)](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status)
 
-### Docker
-
-- [Image Docker Node](https://hub.docker.com/_/node)
-- [Dockerizing a Node.js web app](https://nodejs.org/en/docs/guides/nodejs-docker-webapp)
-- [Nodemon](https://www.npmjs.com/package/nodemon), outil de développement d'applications node.js pour redémarrer le process du serveur web automatiquement lorsque les sources changent
-
 ### Express
 
-- [Générateur d’applications Express](https://expressjs.com/fr/starter/generator.html), générer un projet pour démarrer
 - [Routage](https://expressjs.com/fr/guide/routing.html), la documentation sur le routage d'Express
 - [Pug](https://pugjs.org/api/getting-started.html), moteur de templates JavaScript installé par défaut avec Express
 
 ### Swagger
 
-- [Swagger UI](https://github.com/swagger-api/swagger-ui), documenter une web API RESTful (même si elle devrait être *par définition* autodocumentée et *autodescriptive*)
-- [Swagger UI Express](https://www.npmjs.com/package/swagger-ui-express), module node.js pour générer la documentation de l'API avec Express
+- [Swagger UI](https://github.com/swagger-api/swagger-ui), documenter une web API RESTful (même si elle devrait être *par définition* auto-documentée et auto-descriptive)
+- [Swagger UI Express](https://www.npmjs.com/package/swagger-ui-express), module Node.js pour générer la documentation de l'API avec Express
 - [Swagger auto-gen](https://www.npmjs.com/package/swagger-autogen), module de génération *automatique* de la documentation de l'API dans une application node.js/Express. Voir notamment la documentation pour documenter automatiquement les endpoints (résumé, description, paramètres)
 - [Swagger auto-gen: décrire des paramètres de formulaire POST](https://www.npmjs.com/package/swagger-autogen#parameters)
-- [OpenAPI Specification](https://github.com/OAI/OpenAPI-Specification), un standard de description d'une web API compatible avec REST
+- [OpenAPI Specification](https://github.com/OAI/OpenAPI-Specification), un standard de description d'une web API compatible avec les contraintes REST
 
 ### SGBDR
 
-- [MySQL Docker Image, quick reference](https://hub.docker.com/_/mysql/)
 - [mysql js](https://www.npmjs.com/package/mysql), le driver node.js pour les SGBDR MySQL
+- [mysql2 js](https://www.npmjs.com/package/mysql2), le driver node.js pour les SGBDR MySQL qui supporte l'API des promesses
 - [mysql js, escaping output !](https://www.npmjs.com/package/mysql#escaping-query-values)
 - [Sequelize, Getting Started](https://sequelize.org/docs/v6/getting-started/), Sequelize, un ORM pour node.js

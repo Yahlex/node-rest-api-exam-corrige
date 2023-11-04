@@ -1,5 +1,7 @@
 /**
- * Export des fonctions utils pour la spécification HAL
+ * Export des fonctions helpers pour la spécification HAL
+ * Voir la spécification HAL : https://stateless.group/hal_specification.html
+ * Voir la spécification HAL (RFC, source) : https://datatracker.ietf.org/doc/html/draft-kelly-json-hal
  */
 
 /**
@@ -28,16 +30,17 @@ function halLinkObject(url, type = '', name = '', templated = false, deprecation
  * @returns un Ressource Object Concert (spec HAL)
  */
 function mapConcertoResourceObject(concertData, baseURL) {
+    console.log(concertData)
     return {
         "_links": [{
-            "self": halLinkObject(baseURL + '/concerts' + '/' + concertData.id, 'string'),
-            "reservation": halLinkObject(baseURL + '/concerts' + '/' + concertData.id + '/reservation', 'string')
+            "self": halLinkObject(baseURL + '/concerts' + '/' + concertData.id_concert, 'string'),
+            "reservation": halLinkObject(baseURL + '/concerts' + '/' + concertData.id_concert + '/reservation', 'string')
         }],
 
-        "artiste": concertData.artiste,
-        "date": concertData.date_debut,
-        "nb_places_restantes": concertData.nb_places - concertData.nb_reservations,
-        "lieu": concertData.lieu,
+        "artist": concertData.artist,
+        "date": concertData.date_start,
+        "nb_seats_available": concertData.nb_seats - concertData.nb_reservations,
+        "location": concertData.location,
         "description": concertData.description
     }
 }
@@ -51,11 +54,11 @@ function mapReservationToResourceObject(data, baseURL) {
     console.log(data)
     return {
         "_links": [{
-            "self": halLinkObject(baseURL + '/concerts' + '/' + data.id + '/reservations', 'string')
+            "self": halLinkObject(`${baseURL}/concerts/${data.id_concert}/reservations/?`, 'string')
         }],
-        "pseudo": data.pseudo,
-        "date_reservation" : data.date_reservation,
-        "statut": data.statut
+        "pseudo": data.id_user,
+        "date_reservation" : data.date_booking,
+        "status": data.statut,
     }
 }
 
@@ -65,7 +68,7 @@ function mapReservationToResourceObject(data, baseURL) {
  * @param {*} baseURL 
  * @returns 
  */
-function mapUtilisateurtoResourceObject(utilisateurData, baseURL) {
+function mapUserToResourceObject(utilisateurData, baseURL) {
 
     return {
         "_links": [{
@@ -78,4 +81,4 @@ function mapUtilisateurtoResourceObject(utilisateurData, baseURL) {
 
 }
 
-module.exports = { halLinkObject, mapConcertoResourceObject, mapUtilisateurtoResourceObject, mapReservationToResourceObject };
+module.exports = { halLinkObject, mapConcertoResourceObject, mapUserToResourceObject, mapReservationToResourceObject };
