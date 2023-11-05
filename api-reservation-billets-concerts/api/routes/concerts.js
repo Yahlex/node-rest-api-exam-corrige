@@ -12,20 +12,33 @@ router.get('/concerts', async function (req, res, next) {
 
     // #swagger.summary = "La liste des concerts à venir"
 
+    /**
+     * Validation des paramètres de requête d'URL
+     */
+    const orderByEnum = ['date'];
+    const sortEnum = ['asc', 'desc'];
+
+    var query = {};
+
+    if (orderByEnum.includes(req.query['order-by'])) {
+
+        if (req.query['order-by'] === 'date') {
+            query['orderBy'] = 'date_start';
+        }
+        if (sortEnum.includes(req.query['sort'])) {
+            query['sort'] = req.query['sort'].toLocaleUpperCase();
+        } else {
+            query['sort'] = 'desc'
+        }
+    }
+
     const conn = await db.mysql.createConnection(db.dsn);
 
+    //Remarque : ORDER BY ne peut pas être paramétrisée par des placeholders (avec ?). Il faut donc directement intégrer
+    //des chaines de caractères interpolées dans la requête. D'où l'importante de la validation en amont.
+
     try {
-        let [rows] = await conn.execute(`
-        SELECT 
-        c.id_concert,location, artist, date_start, nb_seats, COUNT(*) as nb_reservations
-        FROM 
-        Concert c 
-        LEFT JOIN 
-        Reservation r 
-        ON c.id_concert=r.id_concert 
-        WHERE (r.statut != 'cancelled' OR r.statut IS NULL) 
-        AND c.date_start > CURDATE() 
-        GROUP BY (c.id_concert)`);
+        let [rows] = await conn.execute(`SELECT c.id_concert, location, artist, date_start, nb_seats, COUNT(*) as nb_reservations FROM  Concert c LEFT JOIN Reservation r ON c.id_concert=r.id_concert WHERE (r.statut != 'cancelled' OR r.statut IS NULL) AND c.date_start > CURDATE() GROUP BY (c.id_concert) ORDER BY c.${query.orderBy} ${query.sort}`);
 
         //Fabriquer Ressource Object Concerts en respectant la spec HAL
         const ressourceObject = {
@@ -39,12 +52,13 @@ router.get('/concerts', async function (req, res, next) {
         res.json(ressourceObject);
 
     } catch (error) {
+        console.log(error)
         res.status(500).json({ "msg": "Nous rencontrons des difficultés, merci de réessayer plus tard." });
     }
 });
 
 /* Informations sur un concert : GET /concert/{id} */
-router.get('/concerts/:id',  async function (req, res, next) {
+router.get('/concerts/:id', async function (req, res, next) {
 
     // #swagger.summary = "Détail d'un concert"
 

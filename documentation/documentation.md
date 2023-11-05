@@ -458,6 +458,9 @@ baseURL=localhost:5001
 curl $baseURL
 # Consulter les concerts à venir
 curl $baseURL/concerts
+# Consulter les concerts à venir avec filtre par date 
+# (attention à bien mettre l'URL entre guillemets pour échapper le caractère '&')
+curl "$baseURL/concerts?order-by=date&sort=desc"
 # Consulter le détail d'un concert
 curl $baseURL/concerts/3
 # Effectuer une réservation pour un concert
@@ -473,7 +476,7 @@ curl -X DELETE -d "pseudo=john" $baseURL/concerts/3/reservation
 Modifier le schéma pour ajouter la colonne `password` à la table `User` :
 
 ~~~bash
-mysql -uroot -p -h127.0.0.1 -P5002 < documentation/scripts-sql/addpassword.sql
+mysql -uroot -p -h127.0.0.1 -P5002 -Dticketing < documentation/scripts-sql/addpassword.sql
 ~~~
 
 Enfin, effectuer les requêtes HTTP suivantes :

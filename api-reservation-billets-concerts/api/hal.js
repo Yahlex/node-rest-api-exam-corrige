@@ -30,7 +30,6 @@ function halLinkObject(url, type = '', name = '', templated = false, deprecation
  * @returns un Ressource Object Concert (spec HAL)
  */
 function mapConcertoResourceObject(concertData, baseURL) {
-    console.log(concertData)
     return {
         "_links": [{
             "self": halLinkObject(baseURL + '/concerts' + '/' + concertData.id_concert, 'string'),
