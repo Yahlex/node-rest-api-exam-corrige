@@ -38,7 +38,7 @@ router.get('/concerts', async function (req, res, next) {
     //des chaines de caractères interpolées dans la requête. D'où l'importante de la validation en amont.
 
     try {
-        let [rows] = await conn.execute(`SELECT c.id_concert, location, artist, date_start, nb_seats, COUNT(*) as nb_reservations FROM  Concert c LEFT JOIN Reservation r ON c.id_concert=r.id_concert WHERE (r.statut != 'cancelled' OR r.statut IS NULL) AND c.date_start > CURDATE() GROUP BY (c.id_concert) ORDER BY c.${query.orderBy} ${query.sort}`);
+        let [rows] = await conn.execute(`SELECT c.id_concert, location, artist, date_start, nb_seats, COUNT(*) as nb_reservations FROM  Concert c LEFT JOIN Reservation r ON c.id_concert=r.id_concert WHERE (r.statut != 'canceled' OR r.statut IS NULL) AND c.date_start > CURDATE() GROUP BY (c.id_concert) ORDER BY c.${query.orderBy} ${query.sort}`);
 
         //Fabriquer Ressource Object Concerts en respectant la spec HAL
         const ressourceObject = {
@@ -58,7 +58,10 @@ router.get('/concerts', async function (req, res, next) {
 });
 
 /* Informations sur un concert : GET /concert/{id} */
-router.get('/concerts/:id', async function (req, res, next) {
+//Remarque: on a mis un regex ici pour que la route ne match que des paramètres
+//d'url qui soient des nombres entiers (1, 120, 12901, etc.).
+//Le pattern dit [0-9] soit un caractère qui est 0,1,2,.. ou 9. Le '+' indique répète le pattern précédent 1 fois ou plus
+router.get('/concerts/:id([0-9]+)', async function (req, res, next) {
 
     // #swagger.summary = "Détail d'un concert"
 
@@ -78,6 +81,8 @@ router.get('/concerts/:id', async function (req, res, next) {
 
         if (rows.length === 0) {
             res.status(404).json({ "msg": "La ressource que vous recherchez n'existe pas" });
+            //Remarque: il faudrait utiliser res.end() pour être en accord
+            //complet avec la philosophie du framework plutôt que 'return'
             return;
         }
 
